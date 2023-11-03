@@ -205,26 +205,115 @@ int dpl_size(dplist_t *list) {
 
 void *dpl_get_element_at_index(dplist_t *list, int index) {
 
-    //TODO: add your code here
+    //Geval 1: lijst bestaat niet of lijst is leeg
+    if (list == NULL || list->head == NULL) {
+        return NULL;
+    }
 
+    //Geval 2: begin van de lijst of negatieve index
+    if (index <= 0) {
+        return list->head->element;
+    }
+    //Geval 3: middenin de lijst
+    else {
+        dplist_node_t *current = list->head;
+        int count = 0;
+
+        while (current != NULL && count < index) {
+            current = current->next;
+            count++;
+        }
+
+        if (current != NULL) {
+            return current->element;
+        }
+        //Geval 4 einde van de lijst of index groter dan size van de lijst
+        else {
+            dplist_node_t *end = list->head;
+            while (end->next != NULL) {
+                end = end->next;
+            }
+            return end->element;
+        }
+    }
 }
 
 int dpl_get_index_of_element(dplist_t *list, void *element) {
 
-    //TODO: add your code here
+    //Lijst bestaat niet of lijst is leeg
+    if (list == NULL || list->head == NULL) {
+        return -1;
+    }
 
+    //Callback functie element_compare is niet geïmplementeerd
+    if (list->element_compare == NULL) {
+        return -1;
+    }
+
+    dplist_node_t *current = list->head;
+    int count = 0;
+
+    while (current != NULL) {
+        if (list->element_compare(current->element, element) == 0) {
+            return count;
+        }
+        current = current->next;
+        count++;
+    }
+    //Element niet gevonden
+    return -1;
 }
 
 dplist_node_t *dpl_get_reference_at_index(dplist_t *list, int index) {
 
-    //TODO: add your code here
+    //Geval 1: lijst bestaat niet of lijst is leeg
+    if (list == NULL || list->head == NULL) {
+        return NULL;
+    }
 
+    //Geval 2: begin van de lijst of negatieve index
+    if (index <= 0) {
+        return list->head;
+    }
+    //Geval 3: middenin de lijst
+    else {
+        dplist_node_t *current = list->head;
+        int count = 0;
+
+        while (current != NULL && count < index) {
+            current = current->next;
+            count++;
+        }
+
+        if (current != NULL) {
+            return current;
+        }
+        //Geval 4 einde van de lijst
+        else {
+            dplist_node_t *end = list->head;
+            while (end->next != NULL) {
+                end = end->next;
+            }
+            return end;
+        }
+    }
 }
 
 void *dpl_get_element_at_reference(dplist_t *list, dplist_node_t *reference) {
 
-    //TODO: add your code here
+    //Lijst bestaat niet of meegegeven referentie bestaat niet
+    if (list == NULL || reference == NULL) {
+        return NULL;
+    }
 
+    dplist_node_t *current = list->head;
+
+    while (current != NULL) {
+        if (current == reference) {
+            return current->element;
+        }
+        current = current->next;
+    }
+    //Element niet gevonden
+    return NULL;
 }
-
-
