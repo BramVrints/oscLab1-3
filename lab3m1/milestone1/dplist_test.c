@@ -156,6 +156,71 @@ int test03_insert_at_index() {
     return 0;
 }
 
+int test04_remove_at_index() {
+    dplist_t *list = dpl_create(element_copy, element_free, element_compare);
+
+    //test case 1: als je iets van een lege lijst verwijdert, gaat het niet
+    dpl_remove_at_index(list, 0, true);
+    assert(dpl_size(list) == 0);
+
+    //test case 2: iets van een lege lijst verwijderen, zonder element free
+    dpl_remove_at_index(list, 0, false);
+    assert(dpl_size(list) == 0);
+
+    //we gooien een paar dingen/mensen in de lijst
+    my_element_t e1 = {1, "Jasper"};
+    my_element_t e2 = {2, "Axelle"};
+    my_element_t e3 = {3, "Filip"};
+    my_element_t e4 = {4, "Jens"};
+    dpl_insert_at_index(list, &e1, 0, true);
+    dpl_insert_at_index(list, &e2, 1, true);
+    dpl_insert_at_index(list, &e3, 2, true);
+    dpl_insert_at_index(list, &e4, 3, true);
+
+    //test case 3: als we nu Jasper eruit gooien (met free_element), zitten er nog 3 elementen in
+    dpl_remove_at_index(list, 0, true);
+    assert(dpl_size(list) == 3);
+    //het eerste element is weg dus moet -1 returnen als we de index ervan opvragen
+    assert(dpl_get_index_of_element(list, &e1) == -1);
+
+    //test case 4: als we nu de middenste eruit gooien (zonder free_element), zitten er nog 2 elementen in
+    dpl_remove_at_index(list, 1, false);
+    assert(dpl_size(list) == 2);
+    //idem
+    assert(dpl_get_index_of_element(list, &e3) == -1);
+
+    dpl_free(&list, true);
+    return 0;
+}
+
+int test05_size() {
+    dplist_t *list = dpl_create(element_copy, element_free, element_compare);
+
+    //test case 1: lege lijst
+    assert(dpl_size(list) == 0);
+
+    //Test case 2: lijst met 1 element
+    my_element_t e1 = {1, "Windows"};
+    dpl_insert_at_index(list, &e1, 0, true);
+    assert(dpl_size(list) == 1);
+
+    //test case 3: lijst met meerdere elementen
+    my_element_t e2 = {2, "Linux"};
+    dpl_insert_at_index(list, &e2, 1, true);
+    my_element_t e3 = {3, "MacOS"};
+    dpl_insert_at_index(list, &e3, 2, true);
+    assert(dpl_size(list) == 3);
+
+    //test case 4: lijst is leeg als je alles eruit gooit
+    dpl_remove_at_index(list, 0, true);
+    dpl_remove_at_index(list, 0, true);
+    dpl_remove_at_index(list, 0, true);
+    assert(dpl_size(list) == 0);
+
+    dpl_free(&list, true);
+    return 0;
+}
+
 
 
 
@@ -164,6 +229,9 @@ int main(void) {
     yourtest1();
     test02_create();
     test03_insert_at_index();
+    test04_remove_at_index();
+    test05_size();
+
 
 
     return 0;
