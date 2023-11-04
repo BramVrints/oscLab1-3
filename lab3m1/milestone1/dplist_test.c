@@ -221,6 +221,70 @@ int test05_size() {
     return 0;
 }
 
+int test06_get_reference_at_index() {
+    dplist_t *list = dpl_create(element_copy, element_free, element_compare);
+    dpl_insert_at_index(list, "Element1", 0, false);
+    dpl_insert_at_index(list, "Element2", 1, false);
+    dpl_insert_at_index(list, "Element3", 2, false);
+
+    //test case 1: index 0
+    dplist_node_t *ref_1 = dpl_get_reference_at_index(list, 0);
+    //dan assert om te kijken of het opgehaalde element overeenkomt met element1
+
+    //test case 2: middenin de lijst
+    dplist_node_t *ref_2 = dpl_get_reference_at_index(list, 2);
+    //dan assert om te kijken of het opgehaalde element overeenkomt met element1
+
+    //test case 3: index buiten de lijst (negatieve index)
+    dplist_node_t *ref_3 = dpl_get_reference_at_index(list, -1);
+    assert(ref_3 == NULL);
+
+    //test case 4: index buiten de lijst (te grote index)
+    dplist_node_t *ref_4 = dpl_get_reference_at_index(list, 5);
+    assert(ref_4 == dpl_get_element_at_index(list, dpl_size(list) - 1));
+
+    //test case 5: lege lijst
+    dpl_free(&list, true);
+    list = dpl_create(element_copy, element_free, element_compare);
+    dplist_node_t *ref_5 = dpl_get_reference_at_index(list, 0);
+    assert(ref_5 == NULL);
+
+    dpl_free(&list, true);
+    return 0;
+}
+
+int test07_get_element_at_index() {
+    dplist_t *list = dpl_create(element_copy, element_free, element_compare);
+    dpl_insert_at_index(list, "Element1", 0, false);
+    dpl_insert_at_index(list, "Element2", 1, false);
+    dpl_insert_at_index(list, "Element3", 2, false);
+
+    //test case 1: index 0
+    void *e1 = dpl_get_element_at_index(list,0);
+    assert(((char *)e1)[7] == '1');
+
+    //test case 2: middenin de lijst
+    void *e2 = dpl_get_element_at_index(list,1);
+    assert(((char *)e1)[7] == '2');
+
+    //test case 3: index -1: het eerste element wordt meegegeven
+    void *e3 = dpl_get_element_at_index(list,-1);
+    assert(((char *)e1)[7] == '1');
+
+    //test case 4: index die buiten de lijst valt: het laatste element wordt meegegeven
+    void *e4 = dpl_get_element_at_index(list, 5);
+    assert(((char *)e1)[7] == '3');
+
+    //test case 5: lege lijst
+    dpl_free(&list, true);
+    list = dpl_create(element_copy, element_free, element_compare);
+    void *e5 = dpl_get_element_at_index(list, 0);
+    assert(e5 == NULL);
+
+    dpl_free(&list, true);
+    return 0;
+}
+
 
 
 
@@ -231,6 +295,9 @@ int main(void) {
     test03_insert_at_index();
     test04_remove_at_index();
     test05_size();
+    test06_get_reference_at_index();
+    test07_get_element_at_index();
+
 
 
 
