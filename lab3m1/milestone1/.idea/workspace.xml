@@ -18,17 +18,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e16a0120-cb60-4203-868e-f950164cccd9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../milestone1.zip" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../clab2/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/../../clab2/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../clab2/cstring" beforeDir="false" afterPath="$PROJECT_DIR$/../../clab2/cstring" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../clab2/cstring.c" beforeDir="false" afterPath="$PROJECT_DIR$/../../clab2/cstring.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../homework2/hellofunc.o" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../homework2/hellomain.o" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../ex2/dplist.c" beforeDir="false" afterPath="$PROJECT_DIR$/../ex2/dplist.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dplist.c" beforeDir="false" afterPath="$PROJECT_DIR$/dplist.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ex2/program.c" beforeDir="false" afterPath="$PROJECT_DIR$/../ex2/program.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/dplist_test" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dplist_test.c" beforeDir="false" afterPath="$PROJECT_DIR$/dplist_test.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,9 +78,9 @@
     <option name="majorVersion" value="2023" />
     <option name="minorVersion" value="2.2" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="2XfhauYCD90ru293ROaWfR5nzMk" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -104,18 +104,14 @@
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "settings.build.tools.auto.reload": "ALL",
     "settings.editor.selected.configurable": "build.tools",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="Makefile Application.ourtest">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="all" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="milestone1" TARGET_NAME="all" CONFIG_NAME="all" version="1">
+  <component name="RunManager" selected="C/C++ File.dplist_test.c">
+    <configuration name="all" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="milestone1" TARGET_NAME="all" CONFIG_NAME="all" version="1" RUN_PATH="$PROJECT_DIR$/build/dplist_test">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
@@ -135,12 +131,45 @@
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="dplist_test.c" type="CppFileRunConfiguration" factoryName="CppFileRunConfiguration" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="milestone1" TARGET_NAME="dplist_test.c" CONFIG_NAME="dplist_test.c">
+      <option name="sourceFile" value="dplist_test.c" />
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.runfile.CppFileBuildBeforeRunTaskProvider$BasicBuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ourtest.c" type="CppFileRunConfiguration" factoryName="CppFileRunConfiguration" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="milestone1" TARGET_NAME="ourtest.c" CONFIG_NAME="ourtest.c">
+      <option name="sourceFile" value="ourtest.c" />
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.runfile.CppFileBuildBeforeRunTaskProvider$BasicBuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="zip" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="zip" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
     <list>
+      <item itemvalue="C/C++ File.ourtest.c" />
+      <item itemvalue="C/C++ File.dplist_test.c" />
       <item itemvalue="Makefile Application.all" />
       <item itemvalue="Makefile Application.ourtest" />
       <item itemvalue="Makefile Application.randomtest" />
       <item itemvalue="Makefile Application.zip" />
+      <item itemvalue="Makefile Target.zip" />
     </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="C/C++ File.dplist_test.c" />
+        <item itemvalue="C/C++ File.ourtest.c" />
+        <item itemvalue="Makefile Target.zip" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -151,6 +180,7 @@
       <option name="presentableId" value="Default" />
       <updated>1699026109011</updated>
       <workItem from="1699026111869" duration="7058000" />
+      <workItem from="1699102823174" duration="9660000" />
     </task>
     <servers />
   </component>

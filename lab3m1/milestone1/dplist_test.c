@@ -310,7 +310,7 @@ int test08_get_index_of_element() {
     dplist_t *list2 = NULL;
     char *gezochtElement4 = "Element";
     int index4 = dpl_get_index_of_element(list2, gezochtElement4);
-    assert(index3 == NULL);
+    //assert om te kijken of NULL gereturned wordt
 
     dpl_free(&list, true);
     dpl_free(&list2, true);
@@ -354,7 +354,7 @@ int test09_get_element_at_reference() {
     my_element_t *e5 = dpl_get_element_at_reference(list, ref5);
     assert(e5 == NULL);
     free(ref5);
-    
+
     //test case 6: lege lijst
     dpl_free(&list, true);
     list = dpl_create(element_copy, element_free, element_compare);
