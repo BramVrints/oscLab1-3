@@ -91,8 +91,8 @@ void yourtest1() {
     my_element_t *e4 = malloc(sizeof(my_element_t));
     e4->id = 4;
     e4->name = "Erwin";
-    dpl_insert_at_index(list, &e3, 0, false);
-    dpl_insert_at_index(list, &e4, 1, false);
+    dpl_insert_at_index(list, e3, 0, false);
+    dpl_insert_at_index(list, e4, 1, false);
     dpl_free(&list, false);
     ck_assert_msg(list == NULL, "Resultaat moet NULL zijn");
 
@@ -112,8 +112,8 @@ void yourtest1() {
     e6->name = malloc(strlen("Kathleen")+1);
     //de naam op de heap zetten
     strcpy(e6->name, "Kathleen");
-    dpl_insert_at_index(list, &e5, 0, false);
-    dpl_insert_at_index(list, &e6, 1, false);
+    dpl_insert_at_index(list, e5, 0, false);
+    dpl_insert_at_index(list, e6, 1, false);
     dpl_free(&list, true);
     ck_assert_msg(list == NULL, "Resultaat moet NULL zijn");
 }
@@ -140,39 +140,57 @@ void test02_create() {
 int test03_insert_at_index() {
     //test case 1: begin van de lijst
     dplist_t *list1 = dpl_create(element_copy, element_free, element_compare);
-    my_element_t e1 = {1, "Koen Pelsmaekers"};
-    dpl_insert_at_index(list1, &e1, 0, false);
-    ck_assert_msg(element_compare(dpl_get_element_at_index(list1, 0), &e1) == 0,
+    my_element_t *e1 = malloc(sizeof(my_element_t));
+    e1->id = 1;
+    e1->name = malloc(strlen("Koen Pelsmaekers")+1);
+    strcpy(e1->name, "Koen Pelsmaekers");
+    dpl_insert_at_index(list1, e1, 0, false);
+    ck_assert_msg(element_compare(dpl_get_element_at_index(list1, 0), e1) == 0,
                   "element bij index 0 moet 'Koen Pelsmaekers' zijn");
     dpl_free(&list1, true);
 
     //test case 2: einde van de lijst
     dplist_t *list2 = dpl_create(element_copy, element_free, element_compare);
-    my_element_t e2 = {2, "Koen Eneman"};
-    dpl_insert_at_index(list2, &e2, 0, false);
-    ck_assert_msg(element_compare(dpl_get_element_at_index(list2, 0), &e2) == 0,
+    my_element_t *e2 = malloc(sizeof(my_element_t));
+    e2->id = 2;
+    e2->name = malloc(strlen("Koen Eneman")+1);
+    strcpy(e2->name, "Koen Eneman");
+    dpl_insert_at_index(list2, e2, 0, false);
+    ck_assert_msg(element_compare(dpl_get_element_at_index(list2, 0), e2) == 0,
                   "element bij index 0 moet 'Koen Eneman' zijn");
-    my_element_t e3 = {3, "Ludo Bruynseels"};
+    my_element_t *e3 = malloc(sizeof(my_element_t));
+    e3->id = 3;
+    e3->name = malloc(strlen("Ludo Bruynseels")+1);
+    strcpy(e3->name, "Ludo Bruynseels");
     //Hier wordt het element aan het einde van de lijst toegevoegd
-    dpl_insert_at_index(list2, &e3, 0, false);
-    ck_assert_msg(element_compare(dpl_get_element_at_index(list2, 1), &e3) == 0,
+    dpl_insert_at_index(list2, e3, 1, false);
+    ck_assert_msg(element_compare(dpl_get_element_at_index(list2, 1), e3) == 0,
                   "element bij index 1 moet 'Ludo Bruynseels' zijn");
     dpl_free(&list2, true);
 
     //test case 3: middenin de lijst
     dplist_t *list3 = dpl_create(element_copy, element_free, element_compare);
-    my_element_t e4 = {4, "Toon van Waterschoot"};
-    dpl_insert_at_index(list3, &e4, 0, false);
-    ck_assert_msg(element_compare(dpl_get_element_at_index(list3, 0), &e4) == 0,
+    my_element_t *e4 = malloc(sizeof(my_element_t));
+    e4->id = 4;
+    e4->name = malloc(strlen("Toon van Waterschoot")+1);
+    strcpy(e4->name, "Toon van Waterschoot");
+    dpl_insert_at_index(list3, e4, 0, false);
+    ck_assert_msg(element_compare(dpl_get_element_at_index(list3, 0), e4) == 0,
                   "element bij index 0 moet 'Toon van Waterschoot' zijn");
-    my_element_t e5 = {5, "Jeroen van Aken"};
-    dpl_insert_at_index(list3, &e5, 1, false);
-    ck_assert_msg(element_compare(dpl_get_element_at_index(list3, 1), &e5) == 0,
+    my_element_t *e5 = malloc(sizeof(my_element_t));
+    e5->id = 5;
+    e5->name = malloc(strlen("Jeroen van Aken")+1);
+    strcpy(e5->name, "Jeroen van Aken");
+    dpl_insert_at_index(list3, e5, 1, false);
+    ck_assert_msg(element_compare(dpl_get_element_at_index(list3, 1), e5) == 0,
                   "element bij index 1 moet 'Jeroen van Aken' zijn");
-    my_element_t e6 = {6, "Stijn Langendries"};
+    my_element_t *e6 = malloc(sizeof(my_element_t));
+    e6->id = 6;
+    e6->name = malloc(strlen("Stijn Langendries")+1);
+    strcpy(e6->name, "Stijn Langendries");
     //Hier wordt het element echt in het midden toegevoegd
-    dpl_insert_at_index(list3, &e6, 1, false);
-    ck_assert_msg(element_compare(dpl_get_element_at_index(list3, 1), &e6) == 0,
+    dpl_insert_at_index(list3, e6, 1, false);
+    ck_assert_msg(element_compare(dpl_get_element_at_index(list3, 1), e6) == 0,
                   "element bij index 1 moet 'Stijn Langendries' zijn, want het wordt in het midden gestoken");
     dpl_free(&list3, true);
 
@@ -395,8 +413,8 @@ int test09_get_element_at_reference() {
 int main(void) {
 
     yourtest1();
-//    test02_create();
-//    test03_insert_at_index();
+    test02_create();
+    test03_insert_at_index();
 //    test04_remove_at_index();
 //    test05_size();
 //    test06_get_reference_at_index();

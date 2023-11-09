@@ -14,6 +14,10 @@ all : dplist.c dplist_test.c
 	gcc dplist.c dplist_test.c -o build/dplist_test
 	./build/dplist_test
 
+debug : dplist.c dplist_test.c
+	mkdir -p build
+	gcc dplist.c dplist_test.c -o build/dplist_test -g -Wall
+
 clean:
 	rm -r build
 
