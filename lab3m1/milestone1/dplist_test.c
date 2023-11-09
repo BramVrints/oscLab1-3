@@ -345,31 +345,50 @@ int test06_get_reference_at_index() {
 
 int test07_get_element_at_index() {
     dplist_t *list = dpl_create(element_copy, element_free, element_compare);
-    dpl_insert_at_index(list, "Element1", 0, false);
-    dpl_insert_at_index(list, "Element2", 1, false);
-    dpl_insert_at_index(list, "Element3", 2, false);
+
+    //we gooien een paar dingen/mensen in de lijst
+    my_element_t *e1 = malloc(sizeof(my_element_t));
+    e1->id = 1;
+    e1->name = malloc(strlen("Jasper")+1);
+    strcpy(e1->name, "Jasper");
+    my_element_t *e2 = malloc(sizeof(my_element_t));
+    e2->id = 2;
+    e2->name = malloc(strlen("Axelle")+1);
+    strcpy(e2->name, "Axelle");
+    my_element_t *e3 = malloc(sizeof(my_element_t));
+    e3->id = 3;
+    e3->name = malloc(strlen("Filip")+1);
+    strcpy(e3->name, "Filip");
+    dpl_insert_at_index(list, e1, 0, true);
+    dpl_insert_at_index(list, e2, 1, true);
+    dpl_insert_at_index(list, e3, 2, true);
 
     //test case 1: index 0
-    void *e1 = dpl_get_element_at_index(list,0);
-    assert(((char *)e1)[7] == '1');
+    my_element_t *el_1 = malloc(sizeof(my_element_t));
+    el_1 = dpl_get_element_at_index(list,0);
+    assert(strcmp(e1->name, el_1->name) == 0);
 
     //test case 2: middenin de lijst
-    void *e2 = dpl_get_element_at_index(list,1);
-    assert(((char *)e1)[7] == '2');
+    my_element_t *el_2 = malloc(sizeof(my_element_t ));
+    el_2 = dpl_get_element_at_index(list,1);
+    assert(strcmp(e2->name, el_2->name) == 0);
 
     //test case 3: index -1: het eerste element wordt meegegeven
-    void *e3 = dpl_get_element_at_index(list,-1);
-    assert(((char *)e1)[7] == '1');
+    my_element_t *el_3 = malloc(sizeof(my_element_t ));
+    el_3 = dpl_get_element_at_index(list,-1);
+    assert(strcmp(e1->name, el_3->name) == 0);
 
     //test case 4: index die buiten de lijst valt: het laatste element wordt meegegeven
-    void *e4 = dpl_get_element_at_index(list, 5);
-    assert(((char *)e1)[7] == '3');
+    my_element_t *el_4 = malloc(sizeof(my_element_t));
+    el_4 = dpl_get_element_at_index(list, 5);
+    assert(strcmp(e3->name, el_4->name) == 0);
 
     //test case 5: lege lijst
     dpl_free(&list, true);
     list = dpl_create(element_copy, element_free, element_compare);
-    void *e5 = dpl_get_element_at_index(list, 0);
-    assert(e5 == NULL);
+    my_element_t *el_5 = malloc(sizeof(my_element_t ));
+    el_5 = dpl_get_element_at_index(list, 0);
+    assert(el_5 == NULL);
 
     dpl_free(&list, true);
     return 0;
@@ -467,7 +486,7 @@ int main(void) {
     test04_remove_at_index();
     test05_size();
     test06_get_reference_at_index();
-//    test07_get_element_at_index();
+    test07_get_element_at_index();
 //    test08_get_index_of_element();
 //    test09_get_element_at_reference();
 
