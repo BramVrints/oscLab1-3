@@ -442,48 +442,65 @@ int test08_get_index_of_element() {
 
 int test09_get_element_at_reference() {
     dplist_t *list = dpl_create(element_copy, element_free, element_compare);
-    dpl_insert_at_index(list, "Element1", 0, false);
-    dpl_insert_at_index(list, "Element2", 1, false);
-    dpl_insert_at_index(list, "Element3", 2, false);
+
+    //we gooien een paar dingen/mensen in de lijst
+    my_element_t *e1 = malloc(sizeof(my_element_t));
+    e1->id = 1;
+    e1->name = malloc(strlen("Jasper")+1);
+    strcpy(e1->name, "Jasper");
+    my_element_t *e2 = malloc(sizeof(my_element_t));
+    e2->id = 2;
+    e2->name = malloc(strlen("Axelle")+1);
+    strcpy(e2->name, "Axelle");
+    my_element_t *e3 = malloc(sizeof(my_element_t));
+    e3->id = 3;
+    e3->name = malloc(strlen("Filip")+1);
+    strcpy(e3->name, "Filip");
+    dpl_insert_at_index(list, e1, 0, true);
+    dpl_insert_at_index(list, e2, 1, true);
+    dpl_insert_at_index(list, e3, 2, true);
 
     //test case 1: begin van de lijst
     dplist_node_t *ref1 = dpl_get_reference_at_index(list, 0);
-    my_element_t *e1 = dpl_get_element_at_reference(list, ref1);
-    assert(e1 != NULL);
-    assert(e1->id == 1);
-    assert(((char *)e1)[7] == '1');
+    my_element_t *el_1 = malloc(sizeof(my_element_t));
+    el_1 = dpl_get_element_at_reference(list, ref1);
+    assert(el_1->id == 1);
+    assert(strcmp(el_1->name, e1->name) == 0);
 
     //test case 2: middenin de lijst
     dplist_node_t *ref2 = dpl_get_reference_at_index(list, 1);
-    my_element_t *e2 = dpl_get_element_at_reference(list, ref2);
-    assert(e2 != NULL);
-    assert(e2->id == 2);
-    assert(((char *)e2)[7] == '2');
+    my_element_t *el_2 = malloc(sizeof(my_element_t));
+    el_2 = dpl_get_element_at_reference(list, ref2);
+    assert(el_2->id == 2);
+    assert(strcmp(el_2->name, e2->name) == 0);
 
     //test case 3: einde van de lijst
     dplist_node_t *ref3 = dpl_get_reference_at_index(list, 2);
-    my_element_t *e3 = dpl_get_element_at_reference(list, ref3);
-    assert(e3 != NULL);
-    assert(e3->id == 3);
-    assert(((char *)e3)[7] == '3');
+    my_element_t *el_3 = malloc(sizeof(my_element_t));
+    el_3 = dpl_get_element_at_reference(list, ref3);
+    assert(el_3->id == 3);
+    assert(strcmp(el_3->name, e3->name) == 0);
 
     //test case 4: reference is helaas NULL
     dplist_node_t *ref4 = NULL; //wat jammer
-    my_element_t *e4 = dpl_get_element_at_reference(list, ref4);
-    assert(e4 == NULL);
+    my_element_t *el_4 = malloc(sizeof(my_element_t ));
+    el_4 = dpl_get_element_at_reference(list, ref4);
+    assert(el_4 == NULL);
 
     //test case 5: reference is geen bestaande reference in de lijst
     dplist_node_t *ref5 = malloc(dpl_size(dpl_create(element_copy, element_free, element_compare)));
-    my_element_t *e5 = dpl_get_element_at_reference(list, ref5);
-    assert(e5 == NULL);
+    my_element_t *el_5 = malloc(sizeof(my_element_t));
+    el_5 = dpl_get_element_at_reference(list, ref5);
+    assert(el_5 == NULL);
     free(ref5);
 
     //test case 6: lege lijst
     dpl_free(&list, true);
     list = dpl_create(element_copy, element_free, element_compare);
     dplist_node_t *ref6 = dpl_get_reference_at_index(list, 0);
-    my_element_t *e6 = dpl_get_element_at_reference(list, ref6);
-    assert(e6 == NULL);
+    my_element_t *el_6 = malloc(sizeof(my_element_t));
+    el_6 = dpl_get_element_at_reference(list, ref6);
+    assert(el_6 == NULL);
 
     dpl_free(&list, true);
     return 0;
@@ -500,8 +517,7 @@ int main(void) {
     test06_get_reference_at_index();
     test07_get_element_at_index();
     test08_get_index_of_element();
-//    test09_get_element_at_reference();
-
+    test09_get_element_at_reference();
 
     return 0;
 }
