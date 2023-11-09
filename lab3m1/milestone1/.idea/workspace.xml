@@ -18,8 +18,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e16a0120-cb60-4203-868e-f950164cccd9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/test1" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test5" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../clab2/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/../../clab2/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../clab2/cstring" beforeDir="false" afterPath="$PROJECT_DIR$/../../clab2/cstring" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../clab2/cstring.c" beforeDir="false" afterPath="$PROJECT_DIR$/../../clab2/cstring.c" afterDir="false" />
@@ -27,9 +27,6 @@
       <change beforePath="$PROJECT_DIR$/../../homework2/hellomain.o" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../ex2/dplist.c" beforeDir="false" afterPath="$PROJECT_DIR$/../ex2/dplist.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ex2/program.c" beforeDir="false" afterPath="$PROJECT_DIR$/../ex2/program.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/dplist_test" beforeDir="false" afterPath="$PROJECT_DIR$/build/dplist_test" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dplist_test.c" beforeDir="false" afterPath="$PROJECT_DIR$/dplist_test.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../milestone1.zip" beforeDir="false" />
     </list>
@@ -205,7 +202,7 @@
       <workItem from="1699524154319" duration="7021000" />
       <workItem from="1699532864389" duration="335000" />
       <workItem from="1699537800556" duration="2970000" />
-      <workItem from="1699547245070" duration="3342000" />
+      <workItem from="1699547245070" duration="5355000" />
     </task>
     <servers />
   </component>

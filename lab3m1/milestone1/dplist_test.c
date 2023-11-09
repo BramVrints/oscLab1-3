@@ -209,26 +209,38 @@ int test04_remove_at_index() {
     assert(dpl_size(list) == 0);
 
     //we gooien een paar dingen/mensen in de lijst
-    my_element_t e1 = {1, "Jasper"};
-    my_element_t e2 = {2, "Axelle"};
-    my_element_t e3 = {3, "Filip"};
-    my_element_t e4 = {4, "Jens"};
-    dpl_insert_at_index(list, &e1, 0, true);
-    dpl_insert_at_index(list, &e2, 1, true);
-    dpl_insert_at_index(list, &e3, 2, true);
-    dpl_insert_at_index(list, &e4, 3, true);
+    my_element_t *e1 = malloc(sizeof(my_element_t));
+    e1->id = 1;
+    e1->name = malloc(strlen("Jasper")+1);
+    strcpy(e1->name, "Jasper");
+    my_element_t *e2 = malloc(sizeof(my_element_t));
+    e2->id = 2;
+    e2->name = malloc(strlen("Axelle")+1);
+    strcpy(e2->name, "Axelle");
+    my_element_t *e3 = malloc(sizeof(my_element_t));
+    e3->id = 3;
+    e3->name = malloc(strlen("Filip")+1);
+    strcpy(e3->name, "Filip");
+    my_element_t *e4 = malloc(sizeof(my_element_t));
+    e4->id = 4;
+    e4->name = malloc(strlen("Jens")+1);
+    strcpy(e4->name, "Jens");
+    dpl_insert_at_index(list, e1, 0, true);
+    dpl_insert_at_index(list, e2, 1, true);
+    dpl_insert_at_index(list, e3, 2, true);
+    dpl_insert_at_index(list, e4, 3, true);
 
     //test case 3: als we nu Jasper eruit gooien (met free_element), zitten er nog 3 elementen in
     dpl_remove_at_index(list, 0, true);
     assert(dpl_size(list) == 3);
     //het eerste element is weg dus moet -1 returnen als we de index ervan opvragen
-    assert(dpl_get_index_of_element(list, &e1) == -1);
+    assert(dpl_get_index_of_element(list, e1) == -1);
 
     //test case 4: als we nu de middenste eruit gooien (zonder free_element), zitten er nog 2 elementen in
     dpl_remove_at_index(list, 1, false);
     assert(dpl_size(list) == 2);
     //idem
-    assert(dpl_get_index_of_element(list, &e3) == -1);
+    assert(dpl_get_index_of_element(list, e3) == -1);
 
     dpl_free(&list, true);
     return 0;
@@ -241,15 +253,24 @@ int test05_size() {
     assert(dpl_size(list) == 0);
 
     //Test case 2: lijst met 1 element
-    my_element_t e1 = {1, "Windows"};
-    dpl_insert_at_index(list, &e1, 0, true);
+    my_element_t *e1 = malloc(sizeof(my_element_t));
+    e1->id = 1;
+    e1->name = malloc(strlen("Windows")+1);
+    strcpy(e1->name, "Windows");
+    dpl_insert_at_index(list, e1, 0, true);
     assert(dpl_size(list) == 1);
 
     //test case 3: lijst met meerdere elementen
-    my_element_t e2 = {2, "Linux"};
-    dpl_insert_at_index(list, &e2, 1, true);
-    my_element_t e3 = {3, "MacOS"};
-    dpl_insert_at_index(list, &e3, 2, true);
+    my_element_t *e2 = malloc(sizeof(my_element_t));
+    e2->id = 2;
+    e2->name = malloc(strlen("Axelle")+1);
+    strcpy(e2->name, "Axelle");
+    dpl_insert_at_index(list, e2, 1, true);
+    my_element_t *e3 = malloc(sizeof(my_element_t));
+    e3->id = 3;
+    e3->name = malloc(strlen("Filip")+1);
+    strcpy(e3->name, "Filip");
+    dpl_insert_at_index(list, e3, 2, true);
     assert(dpl_size(list) == 3);
 
     //test case 4: lijst is leeg als je alles eruit gooit
@@ -415,8 +436,8 @@ int main(void) {
     yourtest1();
     test02_create();
     test03_insert_at_index();
-//    test04_remove_at_index();
-//    test05_size();
+    test04_remove_at_index();
+    test05_size();
 //    test06_get_reference_at_index();
 //    test07_get_element_at_index();
 //    test08_get_index_of_element();
