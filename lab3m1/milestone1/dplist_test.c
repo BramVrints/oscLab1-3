@@ -396,35 +396,47 @@ int test07_get_element_at_index() {
 
 int test08_get_index_of_element() {
     dplist_t *list = dpl_create(element_copy, element_free, element_compare);
-    dpl_insert_at_index(list, "Element1", 0, false);
-    dpl_insert_at_index(list, "Element2", 1, false);
-    dpl_insert_at_index(list, "Element3", 2, false);
+
+    //we gooien een paar dingen/mensen in de lijst
+    my_element_t *e1 = malloc(sizeof(my_element_t));
+    e1->id = 1;
+    e1->name = malloc(strlen("Jasper")+1);
+    strcpy(e1->name, "Jasper");
+    my_element_t *e2 = malloc(sizeof(my_element_t));
+    e2->id = 2;
+    e2->name = malloc(strlen("Axelle")+1);
+    strcpy(e2->name, "Axelle");
+    my_element_t *e3 = malloc(sizeof(my_element_t));
+    e3->id = 3;
+    e3->name = malloc(strlen("Filip")+1);
+    strcpy(e3->name, "Filip");
+    dpl_insert_at_index(list, e1, 0, true);
+    dpl_insert_at_index(list, e2, 1, true);
+    dpl_insert_at_index(list, e3, 2, true);
 
     //test case 1: zoeken naar een bestaand element
-    char *gezochtElement1 = "Element2";
-    int index1 = dpl_get_index_of_element(list, gezochtElement1);
+    int index1 = dpl_get_index_of_element(list, e2);
     assert(index1 == 1);
 
     //test case 2: zoeken naar een niet-bestaand element
-    char *gezochtElement2 = "Element420";
-    int index2 = dpl_get_index_of_element(list, gezochtElement2);
+    my_element_t *nietBestaandElement = malloc(sizeof(my_element_t));
+    nietBestaandElement->id = 10;
+    nietBestaandElement->name = malloc(strlen("Ik denk dus ik ben -R. Descartes")+1);
+    strcpy(nietBestaandElement->name, "Ik denk dus ik ben -R. Descartes");
+    int index2 = dpl_get_index_of_element(list, nietBestaandElement);
     assert(index2 == -1);
+
+    //test case 3: lijst=null
+    int index3 = dpl_get_index_of_element(NULL, e1);
+    assert(index3 == -1);
 
     //test case 3: zoeken naar een element in een lege lijst
     dpl_free(&list, true);
     list = dpl_create(element_copy, element_free, element_compare);
-    char *gezochtElement3 = "Element";
-    int index3 = dpl_get_index_of_element(list, gezochtElement3);
-    assert(index3 == -1);
-
-    //test case 4: lijst=null
-    dplist_t *list2 = NULL;
-    char *gezochtElement4 = "Element";
-    int index4 = dpl_get_index_of_element(list2, gezochtElement4);
-    //assert om te kijken of NULL gereturned wordt
+    int index4 = dpl_get_index_of_element(list, e1);
+    assert(index4 == -1);
 
     dpl_free(&list, true);
-    dpl_free(&list2, true);
     return 0;
 }
 
@@ -487,7 +499,7 @@ int main(void) {
     test05_size();
     test06_get_reference_at_index();
     test07_get_element_at_index();
-//    test08_get_index_of_element();
+    test08_get_index_of_element();
 //    test09_get_element_at_reference();
 
 
