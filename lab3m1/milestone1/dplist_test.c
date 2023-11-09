@@ -285,25 +285,53 @@ int test05_size() {
 
 int test06_get_reference_at_index() {
     dplist_t *list = dpl_create(element_copy, element_free, element_compare);
-    dpl_insert_at_index(list, "Element1", 0, false);
-    dpl_insert_at_index(list, "Element2", 1, false);
-    dpl_insert_at_index(list, "Element3", 2, false);
+
+    //we gooien een paar dingen/mensen in de lijst
+    my_element_t *e1 = malloc(sizeof(my_element_t));
+    e1->id = 1;
+    e1->name = malloc(strlen("Jasper")+1);
+    strcpy(e1->name, "Jasper");
+    my_element_t *e2 = malloc(sizeof(my_element_t));
+    e2->id = 2;
+    e2->name = malloc(strlen("Axelle")+1);
+    strcpy(e2->name, "Axelle");
+    my_element_t *e3 = malloc(sizeof(my_element_t));
+    e3->id = 3;
+    e3->name = malloc(strlen("Filip")+1);
+    strcpy(e3->name, "Filip");
+    my_element_t *e4 = malloc(sizeof(my_element_t));
+    e4->id = 4;
+    e4->name = malloc(strlen("Jens")+1);
+    strcpy(e4->name, "Jens");
+    dpl_insert_at_index(list, e1, 0, true);
+    dpl_insert_at_index(list, e2, 1, true);
+    dpl_insert_at_index(list, e3, 2, true);
+    dpl_insert_at_index(list, e4, 3, true);
 
     //test case 1: index 0
     dplist_node_t *ref_1 = dpl_get_reference_at_index(list, 0);
-    //dan assert om te kijken of het opgehaalde element overeenkomt met element1
+    my_element_t *el_1 = malloc(sizeof(my_element_t));
+    el_1 = dpl_get_element_at_reference(list, ref_1);
+    assert(el_1->id == e1->id);
 
     //test case 2: middenin de lijst
     dplist_node_t *ref_2 = dpl_get_reference_at_index(list, 2);
     //dan assert om te kijken of het opgehaalde element overeenkomt met element1
+    my_element_t *el_2 = malloc(sizeof(my_element_t));
+    el_2 = dpl_get_element_at_reference(list, ref_2);
+    assert(el_2->id == e3->id);
 
     //test case 3: index buiten de lijst (negatieve index)
     dplist_node_t *ref_3 = dpl_get_reference_at_index(list, -1);
-    assert(ref_3 == NULL);
+    my_element_t *el_3 = malloc(sizeof(my_element_t));
+    el_3 = dpl_get_element_at_reference(list, ref_3);
+    assert(el_3->id == e1->id);
 
     //test case 4: index buiten de lijst (te grote index)
     dplist_node_t *ref_4 = dpl_get_reference_at_index(list, 5);
-    assert(ref_4 == dpl_get_element_at_index(list, dpl_size(list) - 1));
+    my_element_t *el_4 = malloc(sizeof(my_element_t));
+    el_4 = dpl_get_element_at_reference(list, ref_4);
+    assert(el_4->id == e4->id);
 
     //test case 5: lege lijst
     dpl_free(&list, true);
@@ -438,7 +466,7 @@ int main(void) {
     test03_insert_at_index();
     test04_remove_at_index();
     test05_size();
-//    test06_get_reference_at_index();
+    test06_get_reference_at_index();
 //    test07_get_element_at_index();
 //    test08_get_index_of_element();
 //    test09_get_element_at_reference();
