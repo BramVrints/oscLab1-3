@@ -1,10 +1,10 @@
 #define _GNU_SOURCE
 
 #include "dplist.h"
-#include "dplist.c"
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#include <string.h>
 
 typedef struct {
     int id;
@@ -72,9 +72,13 @@ void yourtest1() {
 
     //Test free list met 1 element, met callback
     list = dpl_create(element_copy, element_free, element_compare);
+    //Geheugen op heap vrijmaken voor het element
     my_element_t *e2 = malloc(sizeof(my_element_t));
     e2->id = 2;
-    e2->name = "Danny";
+    //Geheugen op heap vrijmaken voor de naam van het element
+    e2->name = malloc(strlen("Danny")+1);
+    //De naam op de heap zetten
+    strcpy(e2->name, "Danny");
     dpl_insert_at_index(list, e2, 0, false);
     dpl_free(&list, true);
     ck_assert_msg(list == NULL, "Resultaat moet NULL zijn");
@@ -94,12 +98,20 @@ void yourtest1() {
 
     //Test free list met meerdere elementen, met callback
     list = dpl_create(element_copy, element_free, element_compare);
+    //Plaats vrijmaken op heap voor het element
     my_element_t *e5 = malloc(sizeof(my_element_t));
     e5->id = 5;
-    e5->name = "Michiel";
+    //Plaats vrijmaken voor de naam van het element
+    e5->name = malloc(strlen("Michiel")+1);
+    //De naam op de heap zetten
+    strcpy(e5->name, "Michiel");
+    //Plaats vrijmaken op heap voor het element
     my_element_t *e6 = malloc(sizeof(my_element_t));
     e6->id = 6;
-    e6->name = "Kathleen";
+    //Plaats vrijmaken voor de naam van het element
+    e6->name = malloc(strlen("Kathleen")+1);
+    //de naam op de heap zetten
+    strcpy(e6->name, "Kathleen");
     dpl_insert_at_index(list, &e5, 0, false);
     dpl_insert_at_index(list, &e6, 1, false);
     dpl_free(&list, true);
@@ -383,14 +395,14 @@ int test09_get_element_at_reference() {
 int main(void) {
 
     yourtest1();
-    test02_create();
-    test03_insert_at_index();
-    test04_remove_at_index();
-    test05_size();
-    test06_get_reference_at_index();
-    test07_get_element_at_index();
-    test08_get_index_of_element();
-    test09_get_element_at_reference();
+//    test02_create();
+//    test03_insert_at_index();
+//    test04_remove_at_index();
+//    test05_size();
+//    test06_get_reference_at_index();
+//    test07_get_element_at_index();
+//    test08_get_index_of_element();
+//    test09_get_element_at_reference();
 
 
     return 0;

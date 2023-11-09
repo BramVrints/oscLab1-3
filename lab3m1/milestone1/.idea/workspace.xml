@@ -18,19 +18,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e16a0120-cb60-4203-868e-f950164cccd9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../milestone1.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/build/dplist_test" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dplist_test" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../plab1/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../plab1/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../plab1/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../plab1/Makefile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../plab1/config.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../plab1/datamgr.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../plab1/file_creator.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../plab1/lib/dplist.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../plab1/main.c" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../plab1/room_sensor.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../clab2/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/../../clab2/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../clab2/cstring" beforeDir="false" afterPath="$PROJECT_DIR$/../../clab2/cstring" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../clab2/cstring.c" beforeDir="false" afterPath="$PROJECT_DIR$/../../clab2/cstring.c" afterDir="false" />
@@ -39,11 +26,7 @@
       <change beforePath="$PROJECT_DIR$/../ex2/dplist.c" beforeDir="false" afterPath="$PROJECT_DIR$/../ex2/dplist.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ex2/program.c" beforeDir="false" afterPath="$PROJECT_DIR$/../ex2/program.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dplist.c" beforeDir="false" afterPath="$PROJECT_DIR$/dplist.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dplist.h" beforeDir="false" afterPath="$PROJECT_DIR$/dplist.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dplist_test.c" beforeDir="false" afterPath="$PROJECT_DIR$/dplist_test.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test" beforeDir="false" afterPath="$PROJECT_DIR$/test" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dplist_test.c" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../milestone1.zip" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -127,11 +110,6 @@
   }
 }</component>
   <component name="RunManager" selected="Makefile Target.all">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="all" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="milestone1" TARGET_NAME="all" CONFIG_NAME="all" version="1" RUN_PATH="$PROJECT_DIR$/build/dplist_test">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
@@ -150,6 +128,11 @@
     <configuration name="zip" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="milestone1" TARGET_NAME="zip" CONFIG_NAME="zip" version="1">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
     <configuration name="dplist_test.c" type="CppFileRunConfiguration" factoryName="CppFileRunConfiguration" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="milestone1" TARGET_NAME="dplist_test.c" CONFIG_NAME="dplist_test.c">
@@ -215,7 +198,8 @@
       <workItem from="1699102823174" duration="9660000" />
       <workItem from="1699288394958" duration="316000" />
       <workItem from="1699449516397" duration="633000" />
-      <workItem from="1699524154319" duration="6028000" />
+      <workItem from="1699524154319" duration="7021000" />
+      <workItem from="1699532864389" duration="335000" />
     </task>
     <servers />
   </component>
@@ -224,21 +208,5 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/dplist_test.c</url>
-          <line>385</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/dplist_test.c</url>
-          <line>78</line>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

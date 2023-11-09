@@ -11,7 +11,7 @@ randomtest : dplist.c randomtest.c
 
 all : dplist.c dplist_test.c
 	mkdir -p build
-	gcc dplist_test.c -o build/dplist_test
+	gcc dplist.c dplist_test.c -o build/dplist_test
 	./build/dplist_test
 
 clean:
