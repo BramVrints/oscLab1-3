@@ -1,9 +1,13 @@
+/**
+ * \author {AUTHOR}
+ */
 
 #ifndef _DPLIST_H_
 #define _DPLIST_H_
 
-#include <stdbool.h>
-#include <stdlib.h>
+typedef enum {
+    false, true
+} bool; // or use C99 #include <stdbool.h>
 
 /**
  * dplist_t is a struct containing at least a head pointer to the start of the list;
@@ -12,7 +16,10 @@ typedef struct dplist dplist_t;
 
 typedef struct dplist_node dplist_node_t;
 
-
+/* General remark on error handling
+ * All functions below will:
+ * - use assert() to check if memory allocation was successfully.
+ */
 
 /** Create and allocate memory for a new list
  * \param element_copy callback function to duplicate 'element'; If needed allocated new memory for the duplicated element.

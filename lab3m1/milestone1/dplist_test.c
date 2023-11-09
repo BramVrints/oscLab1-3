@@ -1,7 +1,7 @@
 #define _GNU_SOURCE
 
 #include "dplist.h"
-
+#include "dplist.c"
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
@@ -27,6 +27,7 @@ void * element_copy(void * element) {
 
 void element_free(void ** element) {
     free((((my_element_t*)*element))->name);
+
     free(*element);
     *element = NULL;
 }
@@ -62,22 +63,30 @@ void yourtest1() {
 
     //Test free list met 1 element, zonder callback
     list = dpl_create(element_copy, element_free, element_compare);
-    my_element_t e1 = {1, "Jos"};
-    dpl_insert_at_index(list, &e1, 0, false);
+    my_element_t *e1 = malloc(sizeof(my_element_t));
+    e1->id = 1;
+    e1->name = "Jos";
+    dpl_insert_at_index(list, e1, 0, false);
     dpl_free(&list, false);
     ck_assert_msg(list == NULL, "Resultaat moet NULL zijn");
 
     //Test free list met 1 element, met callback
     list = dpl_create(element_copy, element_free, element_compare);
-    my_element_t e2 = {2, "Danny"};
-    dpl_insert_at_index(list, &e2, 0, false);
+    my_element_t *e2 = malloc(sizeof(my_element_t));
+    e2->id = 2;
+    e2->name = "Danny";
+    dpl_insert_at_index(list, e2, 0, false);
     dpl_free(&list, true);
     ck_assert_msg(list == NULL, "Resultaat moet NULL zijn");
 
     //Test free list met meerdere elementen, zonder callback
     list = dpl_create(element_copy, element_free, element_compare);
-    my_element_t e3 = {3, "Geoffrey"};
-    my_element_t e4 = {4, "Erwin"};
+    my_element_t *e3 = malloc(sizeof(my_element_t));
+    e3->id = 3;
+    e3->name = "Geoffrey";
+    my_element_t *e4 = malloc(sizeof(my_element_t));
+    e4->id = 4;
+    e4->name = "Erwin";
     dpl_insert_at_index(list, &e3, 0, false);
     dpl_insert_at_index(list, &e4, 1, false);
     dpl_free(&list, false);
@@ -85,8 +94,12 @@ void yourtest1() {
 
     //Test free list met meerdere elementen, met callback
     list = dpl_create(element_copy, element_free, element_compare);
-    my_element_t e5 = {5, "Michiel"};
-    my_element_t e6 = {6, "Kathleen"};
+    my_element_t *e5 = malloc(sizeof(my_element_t));
+    e5->id = 5;
+    e5->name = "Michiel";
+    my_element_t *e6 = malloc(sizeof(my_element_t));
+    e6->id = 6;
+    e6->name = "Kathleen";
     dpl_insert_at_index(list, &e5, 0, false);
     dpl_insert_at_index(list, &e6, 1, false);
     dpl_free(&list, true);

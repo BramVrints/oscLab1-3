@@ -64,13 +64,14 @@ void dpl_free(dplist_t **list, bool free_element) {
 
 dplist_t *dpl_insert_at_index(dplist_t *list, void *element, int index, bool insert_copy) {
 
-    dplist_node_t *refAtIndex, *listNode;
+
 
     if (list == NULL) {
         return NULL;
     }
+    void* testptr = malloc(24);
 
-    listNode = malloc(sizeof(dplist_node_t ));
+    dplist_node_t *listNode = (dplist_node_t *) malloc(24);
 
     if (insert_copy && list->element_copy != NULL) {
         //Als insert_copy true is, en er bestaat een callback method om te kopiëren,
@@ -96,7 +97,7 @@ dplist_t *dpl_insert_at_index(dplist_t *list, void *element, int index, bool ins
         list->head = listNode;
     }
     else {
-        refAtIndex = dpl_get_reference_at_index(list, index);
+        dplist_node_t* refAtIndex = dpl_get_reference_at_index(list, index);
         //Geval 3: ongeldige index
         if (refAtIndex == NULL) {
             refAtIndex = list->head;
