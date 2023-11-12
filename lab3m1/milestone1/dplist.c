@@ -242,7 +242,7 @@ void *dpl_get_element_at_index(dplist_t *list, int index) {
 int dpl_get_index_of_element(dplist_t *list, void *element) {
 
     //Lijst bestaat niet of lijst is leeg
-    if (list == NULL || list->head == NULL) {
+    if (list == NULL || list->head == NULL || element == NULL) {
         return -1;
     }
 

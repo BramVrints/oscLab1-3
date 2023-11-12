@@ -7,6 +7,7 @@
     <generated>
       <config projectName="milestone1" targetName="randomtest" />
       <config projectName="milestone1" targetName="all" />
+      <config projectName="milestone1" targetName="zip" />
       <config projectName="milestone1" targetName="debug" />
       <config projectName="milestone1" targetName="ourtest" />
     </generated>
@@ -18,8 +19,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e16a0120-cb60-4203-868e-f950164cccd9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/test4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test5" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../clab2/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/../../clab2/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../clab2/cstring" beforeDir="false" afterPath="$PROJECT_DIR$/../../clab2/cstring" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../clab2/cstring.c" beforeDir="false" afterPath="$PROJECT_DIR$/../../clab2/cstring.c" afterDir="false" />
@@ -27,7 +26,9 @@
       <change beforePath="$PROJECT_DIR$/../../homework2/hellomain.o" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../ex2/dplist.c" beforeDir="false" afterPath="$PROJECT_DIR$/../ex2/dplist.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../ex2/program.c" beforeDir="false" afterPath="$PROJECT_DIR$/../ex2/program.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dplist_test.c" beforeDir="false" afterPath="$PROJECT_DIR$/dplist_test.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/dplist_test" beforeDir="false" afterPath="$PROJECT_DIR$/build/dplist_test" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dplist.c" beforeDir="false" afterPath="$PROJECT_DIR$/dplist.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../milestone1.zip" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -110,7 +111,12 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager" selected="Makefile Application.debug">
+  <component name="RunManager" selected="Makefile Application.ourtest">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="all" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="milestone1" TARGET_NAME="all" CONFIG_NAME="all" version="1" RUN_PATH="$PROJECT_DIR$/build/dplist_test">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
@@ -121,7 +127,7 @@
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration name="ourtest" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="milestone1" TARGET_NAME="ourtest" CONFIG_NAME="ourtest" version="1">
+    <configuration name="ourtest" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="milestone1" TARGET_NAME="ourtest" CONFIG_NAME="ourtest" version="1" RUN_PATH="$PROJECT_DIR$/build/dplist_test">
       <method v="2">
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
@@ -131,19 +137,13 @@
         <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
+    <configuration name="zip" type="CLionNativeAppRunConfigurationType" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="milestone1" TARGET_NAME="zip" CONFIG_NAME="zip" version="1">
       <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
       </method>
     </configuration>
     <configuration name="dplist_test.c" type="CppFileRunConfiguration" factoryName="CppFileRunConfiguration" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="milestone1" TARGET_NAME="dplist_test.c" CONFIG_NAME="dplist_test.c">
       <option name="sourceFile" value="dplist_test.c" />
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.runfile.CppFileBuildBeforeRunTaskProvider$BasicBuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="ourtest.c" type="CppFileRunConfiguration" factoryName="CppFileRunConfiguration" temporary="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="milestone1" TARGET_NAME="ourtest.c" CONFIG_NAME="ourtest.c">
-      <option name="sourceFile" value="ourtest.c" />
       <method v="2">
         <option name="com.jetbrains.cidr.cpp.runfile.CppFileBuildBeforeRunTaskProvider$BasicBuildBeforeRunTask" enabled="true" />
       </method>
@@ -154,8 +154,14 @@
       </makefile>
       <method v="2" />
     </configuration>
-    <configuration name="ourtest" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
-      <makefile filename="$PROJECT_DIR$/Makefile" target="ourtest" workingDirectory="" arguments="">
+    <configuration name="debug" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="debug" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <configuration name="joeri" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="joeri" workingDirectory="" arguments="">
         <envs />
       </makefile>
       <method v="2" />
@@ -167,23 +173,24 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="C/C++ File.ourtest.c" />
       <item itemvalue="C/C++ File.dplist_test.c" />
       <item itemvalue="Makefile Application.all" />
       <item itemvalue="Makefile Application.debug" />
       <item itemvalue="Makefile Application.ourtest" />
       <item itemvalue="Makefile Application.randomtest" />
+      <item itemvalue="Makefile Application.zip" />
+      <item itemvalue="Makefile Target.debug" />
+      <item itemvalue="Makefile Target.joeri" />
       <item itemvalue="Makefile Target.all" />
-      <item itemvalue="Makefile Target.ourtest" />
       <item itemvalue="Makefile Target.randomtest" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Makefile Target.debug" />
+        <item itemvalue="Makefile Target.joeri" />
         <item itemvalue="Makefile Target.all" />
         <item itemvalue="C/C++ File.dplist_test.c" />
         <item itemvalue="Makefile Target.randomtest" />
-        <item itemvalue="Makefile Target.ourtest" />
-        <item itemvalue="C/C++ File.ourtest.c" />
       </list>
     </recent_temporary>
   </component>
@@ -202,7 +209,8 @@
       <workItem from="1699524154319" duration="7021000" />
       <workItem from="1699532864389" duration="335000" />
       <workItem from="1699537800556" duration="2970000" />
-      <workItem from="1699547245070" duration="5355000" />
+      <workItem from="1699547245070" duration="9254000" />
+      <workItem from="1699787551985" duration="2202000" />
     </task>
     <servers />
   </component>
