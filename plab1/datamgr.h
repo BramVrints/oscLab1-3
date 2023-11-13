@@ -14,11 +14,11 @@
 #endif
 
 #ifndef SET_MAX_TEMP
-#error SET_MAX_TEMP not set
+#error SET_MAX_TEMP not set. Gebruik voor het compileren aub -DSET_MAX_TEMP=<waarde>
 #endif
 
 #ifndef SET_MIN_TEMP
-#error SET_MIN_TEMP not set
+#error SET_MIN_TEMP not set. Gebruik voor het compileren aub -DSET_MIN_TEMP=<waarde>
 #endif
 
 /*
@@ -74,5 +74,6 @@ time_t datamgr_get_last_modified(sensor_id_t sensor_id);
  *  \return the total amount of sensors
  */
 int datamgr_get_total_sensors();
+
 
 #endif  //DATAMGR_H_
