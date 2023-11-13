@@ -1,5 +1,5 @@
 /**
- * \author {AUTHOR}
+ * \author {Bram Vrints}
  */
 
 #ifndef DATAMGR_H_

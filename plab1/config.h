@@ -1,5 +1,5 @@
 /**
- * \author {AUTHOR}
+ * \author {Bram Vrints}
  */
 
 #ifndef _CONFIG_H_
