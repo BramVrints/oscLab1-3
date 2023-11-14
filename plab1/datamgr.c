@@ -1,13 +1,10 @@
 //
 // Created by bram on 12/11/23.
 //
-//#include <stdint-gcc.h>
-//#include <bits/types/time_t.h>
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
 #include "datamgr.h"
 #include "lib/dplist.h"
 
@@ -44,7 +41,7 @@ void *element_copy(void *element)
 
 void element_free(void **element)
 {
-    //free(((my_element_t *)*element)->name);
+    //free(((my_element_t *)*element)->field);
     free(*element);
     *element = NULL;
 }
@@ -132,24 +129,38 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, FILE *fp_sensor_data) {
     }
 }
 
-/*void update_running_average(my_element_t *sensor, double newTemperature) {
-    //De geschiedenis van de temperatuur wordt opgeslagen in een array van doubles:
-    static double temperatureHistory[RUN_AVG_LENGTH] = {0.0};
-    static int historyIndex = 0;
+uint16_t datamgr_get_room_id(sensor_id_t sensor_id) {
+    ERROR_HANDLER(sensor_id < 0, "Ongeldige sensor ID" );
+    int index = dpl_get_index_of_element(sensorList, &sensor_id);
+    ERROR_HANDLER(index == -1, "Sensor ID niet gevonden in de lijst");
+    my_element_t *sensor = dpl_get_element_at_index(sensorList, index);
+    return sensor->roomId;
+}
 
-    //De huidige (=nieuwste) temperatuur wordt aan de array toegevoegd:
-    temperatureHistory[historyIndex] = newTemperature;
-    //Als de array vol zit zal hij terug aan het begin beginnen:
-    historyIndex = (historyIndex+1) % RUN_AVG_LENGTH;
+sensor_value_t datamgr_get_avg(sensor_id_t sensor_id) {
+    ERROR_HANDLER(sensor_id < 0, "Ongeldige sensor ID");
+    int index = dpl_get_index_of_element(sensorList, &sensor_id);
+    ERROR_HANDLER(index == -1, "Sensor ID niet gevonden in de lijst");
+    my_element_t *sensor = dpl_get_element_at_index(sensorList, index);
 
-    //Het gemiddelde van de geschiedenis van de temperatuur (dus van de array) wordt berekend:
-    double sum = 0.0;
-    for (int i = 0; i < RUN_AVG_LENGTH; i++) {
-        sum += temperatureHistory[i];
+    sensor_value_t sum = 0;
+    int count = (sensor->insertedData < RUN_AVG_LENGTH) ? sensor->insertedData : RUN_AVG_LENGTH;
+
+    for (int i = 0; i < count; i++) {
+        sum += sensor->runningAvg[i];
     }
-    sensor->runningAvg = sum / RUN_AVG_LENGTH;
-}*/
+    return (count > 0) ? (sum / count) : 0.0;
+}
 
+time_t datamgr_get_last_modified(sensor_id_t sensor_id) {
+    ERROR_HANDLER(sensor_id < 0, "Ongeldige sensor ID" );
+    int index = dpl_get_index_of_element(sensorList, &sensor_id);
+    ERROR_HANDLER(index == -1, "Sensor ID niet gevonden in de lijst");
+    my_element_t *sensor = dpl_get_element_at_index(sensorList, index);
+    return sensor->lastModified;
+}
 
-
+int datamgr_get_total_sensors() {
+    return dpl_size(sensorList);
+}
 

@@ -4,6 +4,7 @@
 #include "lib/dplist.h"
 #include "datamgr.h"
 #include <time.h>
+#include <inttypes.h>
 
 int main(){
     printf("Hello World\n");
@@ -20,4 +21,15 @@ int main(){
 
     fclose(map);
     fclose(data);
+
+    int total_sensors = datamgr_get_total_sensors();
+    for (int i = 0; i < total_sensors; i++) {
+        sensor_id_t sensor_id = datamgr_get_room_id(i);
+        sensor_value_t avg = datamgr_get_avg(sensor_id);
+        time_t last_modified = datamgr_get_last_modified(sensor_id);
+        printf("Sensor ID: %" PRIu16 ", Room ID: %" PRIu16 ", AVG: %f, Last Modified: %ld\n",
+                sensor_id, datamgr_get_room_id(sensor_id), avg, last_modified);
+    }
+
+    return 0;
 }
