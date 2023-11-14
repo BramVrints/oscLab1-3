@@ -14,11 +14,13 @@
 #endif
 
 #ifndef SET_MAX_TEMP
-#error SET_MAX_TEMP not set. Gebruik voor het compileren aub -DSET_MAX_TEMP=<waarde>
+#define SET_MAX_TEMP 50
+//#error SET_MAX_TEMP not set. Gebruik voor het compileren aub -DSET_MAX_TEMP=<waarde>
 #endif
 
 #ifndef SET_MIN_TEMP
-#error SET_MIN_TEMP not set. Gebruik voor het compileren aub -DSET_MIN_TEMP=<waarde>
+#define SET_MIN_TEMP 5
+//#error SET_MIN_TEMP not set. Gebruik voor het compileren aub -DSET_MIN_TEMP=<waarde>
 #endif
 
 /*
