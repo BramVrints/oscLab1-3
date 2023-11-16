@@ -42,7 +42,7 @@ FILE * open_db(char * filename, bool append) {
             write_to_log_process("Log file kan niet geopend worden");
         }
         else {
-            write_to_log_process("Log file is geopend");
+            write_to_log_process("Data file opened.");
         }
         close(logPipe[READ_END]);
         exit(EXIT_SUCCESS);
@@ -86,7 +86,7 @@ int insert_sensor(FILE * f, sensor_id_t id, sensor_value_t value, sensor_ts_t ts
         return -1;
     }
 
-    write_to_log_process("De sensor is toegevoegd");
+    write_to_log_process("Data inserted.");
     return 0;
 }
 
@@ -97,7 +97,7 @@ int close_db(FILE * f) {
     }
 
     fclose(f);
-    write_to_log_process("Het csv bestand is gesloten");
+    write_to_log_process("Data file closed.");
 
     end_log_process();
 

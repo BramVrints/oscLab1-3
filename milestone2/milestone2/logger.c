@@ -23,7 +23,7 @@ int create_log_process() {
         return -1;
     }
     else {
-        printf("Log file is geopend\n");
+        printf("Data file opened.\n");
         return 0;
     }
 }
