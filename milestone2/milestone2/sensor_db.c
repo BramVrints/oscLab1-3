@@ -2,6 +2,7 @@
 // Created by bram on 14/11/23.
 //
 #include "sensor_db.h"
+#include "logger.h"
 #include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,15 +12,17 @@
 #include <sys/types.h>
 #include <wait.h>
 
-static FILE *csvFile = NULL;
-static int logPipe[2];
+#define MAX_STR_LEN 255
+#define READ_END 0
+#define WRITE_END 1
+
+static FILE *csvFile;
 
 FILE * open_db(char * filename, bool append) {
-    csvFile = fopen(filename, append ? "a" : "w");
-    if (csvFile == NULL) {
-        perror("Bestand kan niet geopend worden");
-        exit(EXIT_FAILURE);
-    }
+    create_log_process();
+    char wmsg[MAX_STR_LEN];
+    char rmsg[MAX_STR_LEN];
+    int logPipe[2];
 
     if (pipe(logPipe) == -1) {
         perror("Pipe maken voor logger lukt niet");
@@ -27,29 +30,40 @@ FILE * open_db(char * filename, bool append) {
 
     pid_t loggerPid = fork();
     if (loggerPid < 0) {
-        perror("Fork mislukt");
+        fprintf(stderr, "Fork mislukt");
+        return NULL;
     }
+
     if (loggerPid == 0) {
-        close(logPipe[1]); //write einde van de pipe sluiten
-        char logMsg[256];
-
-        while (read(logPipe[0], logMsg, sizeof(logMsg)) > 0) {
-            //De log message is ontvangen, dus we gaan schrijven naar gateway.log
-            FILE *logFile = fopen("gateway.log", "a");
-            if (logFile == NULL) {
-                perror("Log file kan niet geopend worden");
-            }
-            fprintf(logFile, "%s\n", logMsg);
-            fclose(logFile);
+        close(logPipe[WRITE_END]); //write einde van de pipe sluiten
+        read(logPipe[READ_END], rmsg, MAX_STR_LEN);
+        if (strcmp(rmsg, "Bericht") != 0) {
+            write_to_log_process("Log file kan niet geopend worden");
         }
-        exit(EXIT_SUCCESS);
+        else {
+            write_to_log_process("Log file is geopend");
+        }
     }
 
-    close(logPipe[0]); //read einde van de pipe sluiten
-    char logMsg[256];
-    sprintf(logMsg, "Er is een nieuw .csv bestand gemaakt of er is een bestaand bestand bijgewerkt."
-                    " Logger PID: %d)", loggerPid);
-    write(logPipe[1], logMsg, strlen(logMsg)+1);
+    else {
+        close(logPipe[READ_END]);
+        if (append) {
+            csvFile = fopen(filename, "a");
+        }
+        else {
+            csvFile = fopen(filename, "w");
+        }
+
+        if (csvFile == NULL) {
+            write(logPipe[WRITE_END], "Mislukt", strlen("Mislukt") +1);
+        }
+        else {
+            write(logPipe[WRITE_END], "Gelukt", strlen("Gelukt") +1);
+        }
+        close(logPipe[WRITE_END]);
+        wait(NULL);
+    }
+
     return csvFile;
 }
 
