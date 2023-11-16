@@ -3,14 +3,15 @@
 //
 #include "sensor_db.h"
 #include "logger.h"
-#include "config.h"
+//#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdbool.h>
-#include <sys/types.h>
+//#include <sys/types.h>
 #include <wait.h>
+#include <inttypes.h>
 
 #define MAX_STR_LEN 255
 #define READ_END 0
@@ -43,6 +44,8 @@ FILE * open_db(char * filename, bool append) {
         else {
             write_to_log_process("Log file is geopend");
         }
+        close(logPipe[READ_END]);
+        exit(EXIT_SUCCESS);
     }
 
     else {
@@ -68,21 +71,34 @@ FILE * open_db(char * filename, bool append) {
 }
 
 int insert_sensor(FILE * f, sensor_id_t id, sensor_value_t value, sensor_ts_t ts) {
+    if (f == NULL) {
+        write_to_log_process("Ongeldige file pointer, sensor kan niet toegevoegd worden :-( ");
+        return -1;
+    }
+
     //Zo wordt de data in de file geprint:
     int resultaat = fprintf(f, "%" PRIu16 ",\t%g,\t%" PRIu64 "\n", id, value, (uint64_t)ts);
-    //Als er een fout gebeurt is resultaat < 0, anders stelt deze het aantal succesvol geschreven karakters voor
+
+    //Als er een fout gebeurt, is resultaat < 0, anders stelt resultaat het aantal succesvol geschreven karakters voor
     if (resultaat < 0) {
-        perror("Er kan niet naar het bestand geschreven worden");
-        exit(EXIT_FAILURE);
+        write_to_log_process("Er is een fout tijdens het schrijven naar het csv bestand");
+        return -1;
     }
-    return resultaat;
+
+    write_to_log_process("De sensor is toegevoegd");
+    return 0;
 }
 
 int close_db(FILE * f) {
-    int resultaat = fclose(f);
-    if (resultaat != 0) {
-        perror("Bestand kan niet gesloten worden");
-        exit(EXIT_FAILURE);
+    if (f == NULL) {
+        write_to_log_process("Ongeldige file pointer!");
+        return -1;
     }
-    return resultaat;
+
+    fclose(f);
+    write_to_log_process("Het csv bestand is gesloten");
+
+    end_log_process();
+
+    return 0;
 }

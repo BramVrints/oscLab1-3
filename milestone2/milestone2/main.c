@@ -3,9 +3,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <time.h>
-
 #include <sys/types.h>
-
 #include "sensor_db.h"
 #include "logger.h"
 #include "config.h"
