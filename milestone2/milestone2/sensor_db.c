@@ -50,6 +50,7 @@ FILE * open_db(char * filename, bool append) {
 
     else {
         close(logPipe[READ_END]);
+        write(logPipe[WRITE_END], "Bericht", strlen("Bericht") + 1);
         if (append) {
             csvFile = fopen(filename, "a");
         }
