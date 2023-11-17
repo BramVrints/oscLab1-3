@@ -3,9 +3,6 @@
 //
 #include "logger.h"
 #include <stdio.h>
-#include <stdlib.h>
-//#include <unistd.h>
-#include <sys/types.h>
 #include <string.h>
 #include <time.h>
 
@@ -31,5 +28,4 @@ int create_log_process() {
 int end_log_process() {
     return fclose(logFile);
 }
-
 

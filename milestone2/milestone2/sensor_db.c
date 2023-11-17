@@ -3,13 +3,11 @@
 //
 #include "sensor_db.h"
 #include "logger.h"
-//#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <stdbool.h>
-//#include <sys/types.h>
 #include <wait.h>
 #include <inttypes.h>
 
@@ -82,7 +80,7 @@ int insert_sensor(FILE * f, sensor_id_t id, sensor_value_t value, sensor_ts_t ts
 
     //Als er een fout gebeurt, is resultaat < 0, anders stelt resultaat het aantal succesvol geschreven karakters voor
     if (resultaat < 0) {
-        write_to_log_process("Er is een fout tijdens het schrijven naar het csv bestand");
+        write_to_log_process("An error occurred when writing to the csv file.");
         return -1;
     }
 
