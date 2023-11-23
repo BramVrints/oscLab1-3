@@ -33,6 +33,7 @@ int main(int argc, char *argv[]) {
 
     printf("Test server is started\n");
     if (tcp_passive_open(&server, PORT) != TCP_NO_ERROR) exit(EXIT_FAILURE);
+    printf("Connectie is geopend");
     do {
         if (tcp_wait_for_connection(server, &client) != TCP_NO_ERROR) exit(EXIT_FAILURE);
 
@@ -48,7 +49,7 @@ int main(int argc, char *argv[]) {
             perror("pthread_detach");
         }
 
-        //conn_counter incrementen op een thread-safe manier
+        //conn_counter incrementen op een thread-safe manier:
         pthread_mutex_lock(&connCounterMutex);
         conn_counter++;
         pthread_mutex_unlock(&connCounterMutex);
@@ -58,6 +59,7 @@ int main(int argc, char *argv[]) {
     if (tcp_close(&server) != TCP_NO_ERROR) exit(EXIT_FAILURE);
 
     printf("Test server is shutting down\n");
+
     return 0;
 }
 
@@ -70,12 +72,15 @@ void *handle_client(void *arg) {
             // read sensor ID
             bytes = sizeof(data.id);
             result = tcp_receive(client, (void *) &data.id, &bytes);
+            printf("sensor id ontvangen\n");
             // read temperature
             bytes = sizeof(data.value);
             result = tcp_receive(client, (void *) &data.value, &bytes);
+            printf("temperatuur ontvangen\n");
             // read timestamp
             bytes = sizeof(data.ts);
             result = tcp_receive(client, (void *) &data.ts, &bytes);
+            printf("timestamp ontvangen\n");
 
             if ((result == TCP_NO_ERROR) && bytes) {
                 //kritische sectie bij printf: mutex lock gebruiken
