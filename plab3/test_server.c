@@ -15,11 +15,13 @@
 
 void *handle_client(void *arg);
 
+pthread_mutex_t printfMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t connCounterMutex = PTHREAD_MUTEX_INITIALIZER;
+int conn_counter = 0;
+
+
 int main(int argc, char *argv[]) {
     tcpsock_t *server, *client;
-    sensor_data_t data;
-    int bytes, result;
-    int conn_counter = 0;
     
     if(argc < 3) {
     	printf("Please provide the right arguments: first the port, then the max nb of clients");
@@ -41,10 +43,15 @@ int main(int argc, char *argv[]) {
             exit(EXIT_FAILURE);
         }
 
-        pthread_detach(threadId);
-        printf("Incoming client connection\n");
-        conn_counter++;
+        int detachResult = pthread_detach(threadId);
+        if (detachResult != 0) {
+            perror("pthread_detach");
+        }
 
+        //conn_counter incrementen op een thread-safe manier
+        pthread_mutex_lock(&connCounterMutex);
+        conn_counter++;
+        pthread_mutex_unlock(&connCounterMutex);
 
     } while (conn_counter < MAX_CONN);
 
@@ -71,8 +78,11 @@ void *handle_client(void *arg) {
             result = tcp_receive(client, (void *) &data.ts, &bytes);
 
             if ((result == TCP_NO_ERROR) && bytes) {
+                //kritische sectie bij printf: mutex lock gebruiken
+                pthread_mutex_lock(&printfMutex);
                 printf("sensor id = %" PRIu16 " - temperature = %g - timestamp = %ld\n", data.id, data.value,
                        (long int) data.ts);
+                pthread_mutex_unlock(&printfMutex);
             }
         } while (result == TCP_NO_ERROR);
 
