@@ -5,12 +5,16 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <inttypes.h>
 #include "sbuffer.h"
 
 #define FILENAME "sensor_data"
 
 void *writerThread(void *arg);
 void *readerThread(void *arg);
+
+//mutex initialiseren om naar de csv file te kunnen schrijven
+pthread_mutex_t csvFileMutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main() {
 
@@ -43,6 +47,7 @@ int main() {
 
     //opruimen
     sbuffer_free(&buffer);
+    pthread_mutex_destroy(&csvFileMutex);
     return 0;
 }
 
@@ -75,8 +80,8 @@ void *readerThread(void *arg) {
     sbuffer_t *buffer = (sbuffer_t *)arg;
 
     //bestand openen
-    FILE *csvFile;
-    if (buffer == NULL) {
+    FILE *csvFile = fopen("sensor_data_out.csv", "w");
+    if (csvFile == NULL) {
         perror("fopen");
         exit(EXIT_FAILURE);
     }
@@ -91,9 +96,11 @@ void *readerThread(void *arg) {
                 break;
             }
 
-            //data naar het CSV bestand schrijven
+            //data naar het CSV bestand schrijven: kritische sectie
+            pthread_mutex_lock(&csvFileMutex);
             fprintf(csvFile, "%" PRIu16 ",%g,%ld\n", data.id, data.value, (long int)data.ts);
             fflush(csvFile);
+            pthread_mutex_unlock(&csvFileMutex);
             usleep(25000); //25ms slapen
         }
         else if (status == SBUFFER_NO_DATA) {
