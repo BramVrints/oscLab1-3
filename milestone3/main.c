@@ -10,16 +10,16 @@
 
 #define FILENAME "sensor_data"
 
-void *writerThread(void *arg);
-void *readerThread(void *arg);
+sbuffer_t *buffer;
 
-//mutex initialiseren om naar de csv file te kunnen schrijven
+void *writerThread();
+void *readerThread();
+
+//mutex initialiseren om veilig naar de csv file te kunnen schrijven
 pthread_mutex_t csvFileMutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main() {
-
     // Shared buffer initialiseren
-    sbuffer_t *buffer;
     if (sbuffer_init(&buffer) != SBUFFER_SUCCESS) {
         fprintf(stderr, "Buffer initialiseren mislukt :( \n");
         exit(EXIT_FAILURE);
@@ -48,13 +48,13 @@ int main() {
     //opruimen
     sbuffer_free(&buffer);
     pthread_mutex_destroy(&csvFileMutex);
+
     return 0;
 }
 
-void *writerThread(void *arg) {
-    sbuffer_t *buffer = (sbuffer_t *)arg;
+void *writerThread() {
 
-    //bestand openen
+    //bestand openen: rb wilt zeggen read binary
     FILE *file = fopen(FILENAME, "rb");
     if (file == NULL) {
         perror("fopen");
@@ -62,22 +62,31 @@ void *writerThread(void *arg) {
     }
 
     //sensor data lezen en in de buffer gooien
-    sensor_data_t data;
-    while (fread(&data, sizeof(sensor_data_t), 1, file) == 1) {
-        sbuffer_insert(buffer, &data);
+    sensor_data_t *data = (sensor_data_t *)malloc(sizeof(sensor_data_t));
+    while (fread(&data->id, sizeof(sensor_id_t), 1, file) == 1) {
+        fread(&data->value, sizeof(sensor_value_t), 1, file);
+        fread(&data->ts, sizeof(sensor_ts_t), 1, file);
+        sbuffer_insert(buffer, data);
+        printf("Writer thread heeft sensor data gelezen - ID: %" PRIu16 "\n", data->id);
         usleep(10000); //10ms slapen
+
     }
 
     //end of stream marker toevoegen
-    data.id = 0;
-    sbuffer_insert(buffer, &data);
+    printf("Writer thread: end of stream marker wordt toegevoegd\n");
+    data->id = 0;
+    sbuffer_insert(buffer, data);
+    //usleep(50000);
 
     fclose(file);
-    return NULL;
+    free(data);
+    pthread_exit(NULL);
 }
 
-void *readerThread(void *arg) {
-    sbuffer_t *buffer = (sbuffer_t *)arg;
+void *readerThread() {
+
+    sensor_data_t *data = (sensor_data_t *)malloc(sizeof(sensor_data_t));
+    int status;
 
     //bestand openen
     FILE *csvFile = fopen("sensor_data_out.csv", "w");
@@ -86,19 +95,18 @@ void *readerThread(void *arg) {
         exit(EXIT_FAILURE);
     }
 
-    sensor_data_t data;
-    int status;
-
     while (1) {
-        status = sbuffer_remove(buffer, &data);
+        status = sbuffer_remove(buffer, data);
         if (status == SBUFFER_SUCCESS) {
-            if (data.id == 0) {
+            if (data->id == 0) {
+                printf("reader thread: end of stream marker gedetecteerd");
                 break;
             }
 
             //data naar het CSV bestand schrijven: kritische sectie
             pthread_mutex_lock(&csvFileMutex);
-            fprintf(csvFile, "%" PRIu16 ",%g,%ld\n", data.id, data.value, (long int)data.ts);
+            fprintf(csvFile, "%" PRIu16 ",%g,%ld\n", data->id, data->value, data->ts);
+            printf("Reader thread heeft data geschreven naar csv bestand - ID: %" PRIu16 "\n", data->id);
             fflush(csvFile);
             pthread_mutex_unlock(&csvFileMutex);
             usleep(25000); //25ms slapen
@@ -112,6 +120,7 @@ void *readerThread(void *arg) {
         }
     }
     fclose(csvFile);
-    return NULL;
+    free(data);
+    pthread_exit(NULL);
 }
 
