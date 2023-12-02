@@ -7,6 +7,8 @@
 #include <pthread.h>
 #include "sbuffer.h"
 
+pthread_cond_t cond_var;
+
 /**
  * basic node for the buffer, these nodes are linked together to create the buffer
  */
@@ -31,6 +33,8 @@ int sbuffer_init(sbuffer_t **buffer) {
     (*buffer)->tail = NULL;
     //Mutex initialiseren:
     pthread_mutex_init(&(*buffer)->mutex, NULL);
+    //POSIX condition variable initialiseren:
+    pthread_cond_init(&cond_var, NULL);
     return SBUFFER_SUCCESS;
 }
 
@@ -60,14 +64,21 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data) {
     pthread_mutex_lock(&buffer->mutex);
 
     //Als de buffer leeg is gaat het niet, dus moeten we terug unlocken
-    if (buffer->head == NULL) {
-        pthread_mutex_unlock(&buffer->mutex);
-        return SBUFFER_NO_DATA;
+    while (buffer->head == NULL) {
+        pthread_cond_wait(&cond_var, &buffer->mutex);
+        //return SBUFFER_NO_DATA;
     }
 
     *data = buffer->head->data;
-    dummy = buffer->head;
 
+    //Als het de end of stream character is:
+    if (data->id == 0) {
+        pthread_cond_signal(&cond_var);
+        pthread_mutex_unlock(&buffer->mutex);
+        return SBUFFER_SUCCESS;
+    }
+
+    dummy = buffer->head;
     if (buffer->head == buffer->tail) // buffer has only one node
     {
         buffer->head = buffer->tail = NULL;
@@ -86,17 +97,17 @@ int sbuffer_insert(sbuffer_t *buffer, sensor_data_t *data) {
     sbuffer_node_t *dummy;
     if (buffer == NULL) return SBUFFER_FAILURE;
 
-    //kritische sectie
-    pthread_mutex_lock(&buffer->mutex);
-
     dummy = malloc(sizeof(sbuffer_node_t));
     if (dummy == NULL) {
-        pthread_mutex_unlock(&buffer->mutex);
+        //pthread_mutex_unlock(&buffer->mutex);
         return SBUFFER_FAILURE;
     }
 
     dummy->data = *data;
     dummy->next = NULL;
+
+    //kritische sectie
+    pthread_mutex_lock(&buffer->mutex);
 
     if (buffer->tail == NULL) // buffer empty (buffer->head should also be NULL
     {
@@ -107,6 +118,7 @@ int sbuffer_insert(sbuffer_t *buffer, sensor_data_t *data) {
         buffer->tail = buffer->tail->next;
     }
 
+    pthread_cond_signal(&cond_var);
     //kritische sectie terug vrijgeven
     pthread_mutex_unlock(&buffer->mutex);
     return SBUFFER_SUCCESS;
