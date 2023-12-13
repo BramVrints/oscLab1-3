@@ -66,7 +66,6 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data) {
     //Als de buffer leeg is gaat het niet, dus moeten we terug unlocken
     while (buffer->head == NULL) {
         pthread_cond_wait(&cond_var, &buffer->mutex);
-        //return SBUFFER_NO_DATA;
     }
 
     *data = buffer->head->data;
@@ -99,7 +98,6 @@ int sbuffer_insert(sbuffer_t *buffer, sensor_data_t *data) {
 
     dummy = malloc(sizeof(sbuffer_node_t));
     if (dummy == NULL) {
-        //pthread_mutex_unlock(&buffer->mutex);
         return SBUFFER_FAILURE;
     }
 

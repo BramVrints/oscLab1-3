@@ -10,15 +10,20 @@
 #include <inttypes.h>
 #include <pthread.h>
 #include "config.h"
+#include "sbuffer.h"
 #include "lib/tcpsock.h"
 
 /**
  * Implements a parallel test server (multiple connections at the same time)
  */
 
+typedef struct {
+    tcpsock_t *client;
+    sbuffer_t *buffer;
+} ThreadArgs;
+
 void *handle_client(void *arg);
 
-pthread_mutex_t printfMutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t connCounterMutex = PTHREAD_MUTEX_INITIALIZER;
 int conn_counter = 0;
 
@@ -31,6 +36,13 @@ int main(int argc, char *argv[]) {
         return -1;
     }
 
+    // Shared buffer initialization
+    sbuffer_t *buffer;
+    if (sbuffer_init(&buffer) != SBUFFER_SUCCESS) {
+        fprintf(stderr, "Buffer initialization failed\n");
+        exit(EXIT_FAILURE);
+    }
+
     int MAX_CONN = atoi(argv[2]);
     int PORT = atoi(argv[1]);
 
@@ -41,8 +53,11 @@ int main(int argc, char *argv[]) {
         if (tcp_wait_for_connection(server, &client) != TCP_NO_ERROR) exit(EXIT_FAILURE);
 
         //Thread maken voor elke client
+        ThreadArgs threadArgs;
+        threadArgs.client = client;
+        threadArgs.buffer = buffer;
         pthread_t threadId;
-        if (pthread_create(&threadId, NULL, handle_client, (void *)client) != 0) {
+        if (pthread_create(&threadId, NULL, handle_client, (void *)&threadArgs) != 0) {
             perror("pthread_create");
             exit(EXIT_FAILURE);
         }
@@ -67,7 +82,9 @@ int main(int argc, char *argv[]) {
 }
 
 void *handle_client(void *arg) {
-    tcpsock_t *client = (tcpsock_t *)arg;
+    ThreadArgs *threadArgs = (ThreadArgs *)arg;
+    tcpsock_t *client = threadArgs->client;
+    sbuffer_t *buffer = threadArgs->buffer;
     sensor_data_t data;
     int bytes, result;
 
@@ -86,11 +103,13 @@ void *handle_client(void *arg) {
         printf("timestamp ontvangen\n");
 
         if ((result == TCP_NO_ERROR) && bytes) {
-            //kritische sectie bij printf: mutex lock gebruiken
-            pthread_mutex_lock(&printfMutex);
-            printf("sensor id = %" PRIu16 " - temperature = %g - timestamp = %ld\n", data.id, data.value,
-                   (long int) data.ts);
-            pthread_mutex_unlock(&printfMutex);
+            //Instantie van sensor data kopiëren om thread safety te waarborgen
+            //Anders kan het zijn dat de client de data aanpastt vooraleer het gekopiëerd is in de buffer
+            sensor_data_t dataToCopy;
+            dataToCopy.id = data.id;
+            dataToCopy.value = data.value;
+            dataToCopy.ts = data.ts;
+            sbuffer_insert(buffer, &dataToCopy);
         }
     } while (result == TCP_NO_ERROR);
 
