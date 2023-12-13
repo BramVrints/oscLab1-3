@@ -64,12 +64,9 @@ void dpl_free(dplist_t **list, bool free_element) {
 
 dplist_t *dpl_insert_at_index(dplist_t *list, void *element, int index, bool insert_copy) {
 
-
-
     if (list == NULL) {
         return NULL;
     }
-    void* testptr = malloc(24);
 
     dplist_node_t *listNode = (dplist_node_t *) malloc(24);
 

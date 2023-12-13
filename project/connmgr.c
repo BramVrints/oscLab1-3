@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <inttypes.h>
+//#include <inttypes.h>
 #include <pthread.h>
 #include "config.h"
 #include "sbuffer.h"
@@ -105,11 +105,14 @@ void *handle_client(void *arg) {
         if ((result == TCP_NO_ERROR) && bytes) {
             //Instantie van sensor data kopiëren om thread safety te waarborgen
             //Anders kan het zijn dat de client de data aanpastt vooraleer het gekopiëerd is in de buffer
+            //Want de mutex lock zit IN de sbuffer_insert
             sensor_data_t dataToCopy;
             dataToCopy.id = data.id;
             dataToCopy.value = data.value;
             dataToCopy.ts = data.ts;
-            sbuffer_insert(buffer, &dataToCopy);
+            if (sbuffer_insert(buffer, &dataToCopy) == SBUFFER_SUCCESS) {
+                printf("Data in buffer inserted\n");
+            }
         }
     } while (result == TCP_NO_ERROR);
 

@@ -66,16 +66,28 @@ run : sensor_gateway sensor_node
 zip:
 	zip lab_final.zip main.c connmgr.c connmgr.h datamgr.c datamgr.h sbuffer.c sbuffer.h sensor_db.c sensor_db.h config.h lib/dplist.c lib/dplist.h lib/tcpsock.c lib/tcpsock.h
 
+
 SOURCE = main.c connmgr.c datamgr.c sbuffer.c sensor_db.c lib/dplist.c lib/tcpsock.c
 
-connmgr: connmgr.c sbuffer.c sensor_db.c lib/dplist.c lib/tcpsock.c
-	gcc -Wall -pthread -o connmgr connmgr.c sbuffer.c sensor_db.c lib/dplist.c lib/tcpsock.c
+connmgr: connmgr.c sbuffer.c lib/dplist.c lib/tcpsock.c
+	gcc -Wall -pthread -o connmgr connmgr.c sbuffer.c lib/dplist.c lib/tcpsock.c
+
+sensor_node: sensor_node.c lib/tcpsock.c
+	gcc -g sensor_node.c lib/tcpsock.c -o sensor_node
+
+runserver: connmgr
+	./connmgr 5678 4
+
+runclient1: sensor_node
+	./sensor_node 1 2 127.0.0.1 5678
+
+runclient2: sensor_node
+	./sensor_node 2 5 127.0.0.1 5678
+
 
 datamgr: datamgr.c sbuffer.c sensor_db.c lib/dplist.c
 	gcc -Wall -pthread -o datamgr datamgr.c sbuffer.c sensor_db.c lib/dplist.c
 
-sensor_gateway: SOURCE
-	gcc -Wall -pthread -o sensor_gateway SOURCE
 
 clean_incrementals:
 	rm -f sensor_gateway connmgr datamgr
