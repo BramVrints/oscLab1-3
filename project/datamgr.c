@@ -102,6 +102,7 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, FILE *fp_sensor_data) {
 
 
     //we gaan sensor data uitlezen en de gegevens bij de bijhorende sensoren in de lijst steken
+    //dit moet uit de buffer lezen, niet meer uit een file
     sensor_id_t fileSensorId;
     sensor_value_t temperature;
     sensor_ts_t timestamp;

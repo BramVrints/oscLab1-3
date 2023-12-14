@@ -8,6 +8,7 @@
 #include "sbuffer.h"
 
 pthread_cond_t cond_var;
+pthread_cond_t cond_var_peek;
 
 /**
  * basic node for the buffer, these nodes are linked together to create the buffer
@@ -33,8 +34,9 @@ int sbuffer_init(sbuffer_t **buffer) {
     (*buffer)->tail = NULL;
     //Mutex initialiseren:
     pthread_mutex_init(&(*buffer)->mutex, NULL);
-    //POSIX condition variable initialiseren:
+    //POSIX condition variables initialiseren:
     pthread_cond_init(&cond_var, NULL);
+    pthread_cond_init(&cond_var_peek, NULL);
     return SBUFFER_SUCCESS;
 }
 
@@ -86,6 +88,9 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data) {
         buffer->head = buffer->head->next;
     }
 
+    // Signaleren met de condition variable dat de data weg is, zodat de volgende peek kan gebeuren
+    pthread_cond_signal(&cond_var_peek);
+
     //Einde kritische sectie
     pthread_mutex_unlock(&buffer->mutex);
     free(dummy);
@@ -121,3 +126,22 @@ int sbuffer_insert(sbuffer_t *buffer, sensor_data_t *data) {
     pthread_mutex_unlock(&buffer->mutex);
     return SBUFFER_SUCCESS;
 }
+
+int sbuffer_peek(sbuffer_t *buffer, sensor_data_t *data) {
+    if (buffer == NULL || data == NULL) return SBUFFER_FAILURE;
+
+    // Kritische sectie
+    pthread_mutex_lock(&buffer->mutex);
+
+    while (buffer->head == NULL) {
+        pthread_cond_wait(&cond_var, &buffer->mutex);
+    }
+
+    *data = buffer->head->data;
+
+    // Einde kritische sectie
+    pthread_mutex_unlock(&buffer->mutex);
+
+    return SBUFFER_SUCCESS;
+}
+
