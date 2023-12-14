@@ -49,6 +49,7 @@ int main(int argc, char *argv[]) {
     printf("Test server is started\n");
     if (tcp_passive_open(&server, PORT) != TCP_NO_ERROR) exit(EXIT_FAILURE);
     printf("Connectie is geopend");
+    pthread_t pid[MAX_CONN];
     do {
         if (tcp_wait_for_connection(server, &client) != TCP_NO_ERROR) exit(EXIT_FAILURE);
 
@@ -56,15 +57,10 @@ int main(int argc, char *argv[]) {
         ThreadArgs threadArgs;
         threadArgs.client = client;
         threadArgs.buffer = buffer;
-        pthread_t threadId;
-        if (pthread_create(&threadId, NULL, handle_client, (void *)&threadArgs) != 0) {
+        //pthread_t threadId;
+        if (pthread_create(&pid[conn_counter], NULL, handle_client, (void *)&threadArgs) != 0) {
             perror("pthread_create");
             exit(EXIT_FAILURE);
-        }
-
-        int detachResult = pthread_detach(threadId);
-        if (detachResult != 0) {
-            perror("pthread_detach");
         }
 
         //conn_counter incrementen op een thread-safe manier:
@@ -74,7 +70,13 @@ int main(int argc, char *argv[]) {
 
     } while (conn_counter < MAX_CONN);
 
+
     if (tcp_close(&server) != TCP_NO_ERROR) exit(EXIT_FAILURE);
+
+    for (int i = 0; i<MAX_CONN; i++) {
+        pthread_join(pid[i], NULL);
+    }
+
 
     printf("Test server is shutting down\n");
 

@@ -72,8 +72,6 @@ SOURCE = main.c connmgr.c datamgr.c sbuffer.c sensor_db.c lib/dplist.c lib/tcpso
 connmgr: connmgr.c sbuffer.c lib/dplist.c lib/tcpsock.c
 	gcc -Wall -pthread -o connmgr connmgr.c sbuffer.c lib/dplist.c lib/tcpsock.c
 
-sensor_node: sensor_node.c lib/tcpsock.c
-	gcc -g sensor_node.c lib/tcpsock.c -o sensor_node
 
 runserver: connmgr
 	./connmgr 5678 4
