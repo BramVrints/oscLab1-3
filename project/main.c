@@ -1,10 +1,13 @@
 //
 // Created by bram on 7/12/23.
 //
+#include <string.h>
+#include <unistd.h>
 #include "connmgr.h"
 #include "sbuffer.h"
 #include "datamgr.h"
 
+int pipeInt[2];
 
 int main(int argc, char *argv[]) {
 
@@ -49,5 +52,9 @@ int main(int argc, char *argv[]) {
 
 
     return 0;
+}
+
+void write_to_log_process(char *msg) {
+    write(pipeInt[1], msg, strlen(msg));
 }
 

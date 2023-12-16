@@ -2,7 +2,9 @@
 // Created by bram on 14/11/23.
 //
 #include "sensor_db.h"
-#include "logger.h"
+#include "sbuffer.h"
+//#include "logger.h"
+#include "config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -12,13 +14,27 @@
 #include <inttypes.h>
 
 #define MAX_STR_LEN 255
-#define READ_END 0
-#define WRITE_END 1
+
+//Dit moet in de main.c:
+//#define READ_END 0
+//#define WRITE_END 1
 
 static FILE *csvFile;
+char msg[MAX_STR_LEN];
 
 FILE * open_db(char * filename, bool append) {
-    create_log_process();
+    sprintf(msg, "A new data.csv file has been created.");
+    write_to_log_process(msg);
+
+    if (append == true) {
+        return fopen(filename, "a");
+    }
+    else {
+        return fopen(filename, "w");
+    }
+
+//dit moet in main.c komen:
+    /*create_log_process();
     char wmsg[MAX_STR_LEN];
     char rmsg[MAX_STR_LEN];
     int logPipe[2];
@@ -66,12 +82,32 @@ FILE * open_db(char * filename, bool append) {
         wait(NULL);
     }
 
-    return csvFile;
+    return csvFile;*/
+}
+
+void process_sensor_data_from_sbuffer(FILE * f, sbuffer_t *buffer) {
+    sensor_data_t data;
+    int result;
+
+    while (1) {
+        result = sbuffer_remove(buffer, &data);
+        if (result == SBUFFER_SUCCESS) {
+            if(insert_sensor(f, data.id, data.value, data.ts) != 0) {
+                fprintf(stderr, "Error inserting sensor data into csv file.\n");
+            }
+        }
+        else if (result == SBUFFER_NO_DATA) {
+            sleep(1);
+        }
+        else {
+            fprintf(stderr, "Error receiving data from sbuffer.\n");
+        }
+    }
 }
 
 int insert_sensor(FILE * f, sensor_id_t id, sensor_value_t value, sensor_ts_t ts) {
     if (f == NULL) {
-        write_to_log_process("Ongeldige file pointer, sensor kan niet toegevoegd worden :-( ");
+        write_to_log_process("An error occurred when writing to the csv file.");
         return -1;
     }
 
@@ -84,20 +120,19 @@ int insert_sensor(FILE * f, sensor_id_t id, sensor_value_t value, sensor_ts_t ts
         return -1;
     }
 
-    write_to_log_process("Data inserted.");
+    sprintf(msg, "Data insertion from sensor %d succeeded.", id);
+    write_to_log_process(msg);
     return 0;
 }
 
 int close_db(FILE * f) {
     if (f == NULL) {
-        write_to_log_process("Ongeldige file pointer!");
+        write_to_log_process("Invalid pointer to the csv file");
         return -1;
     }
-
-    fclose(f);
-    write_to_log_process("Data file closed.");
-
-    end_log_process();
-
-    return 0;
+    else {
+        fclose(f);
+        write_to_log_process("The data.csv file has been closed.");
+        return 0;
+    }
 }

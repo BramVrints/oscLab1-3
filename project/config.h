@@ -18,4 +18,6 @@ typedef struct {
     sensor_ts_t ts;
 } sensor_data_t;
 
+void write_to_log_process(char *msg);
+
 #endif /* _CONFIG_H_ */
