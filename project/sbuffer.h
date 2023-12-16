@@ -44,4 +44,19 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data);
 */
 int sbuffer_insert(sbuffer_t *buffer, sensor_data_t *data);
 
+/**
+ * Peeks at the first sensor data in 'buffer' (at the 'head') and returns this sensor data as '*data'
+ * \param buffer a pointer to the buffer that is used
+ * \param data a pointer to pre-allocated sensor_data_t space, the data will be copied into this structure. No new memory is allocated for 'data' in this function.
+ * \return SBUFFER_SUCCESS on success and SBUFFER_FAILURE if an error occurred
+ */
+int sbuffer_peek(sbuffer_t *buffer, sensor_data_t *data);
+
+/**
+ * Checks whether the buffer is empty
+ * @param buffer a pointer to the buffer that is used
+ * @return 1 or 0, to indicate whether it is empty or not
+ */
+int sbuffer_is_empty(sbuffer_t *buffer);
+
 #endif  //_SBUFFER_H_

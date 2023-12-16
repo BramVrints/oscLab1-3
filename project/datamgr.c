@@ -5,10 +5,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <pthread.h>
 #include "datamgr.h"
 #include "lib/dplist.h"
+#include "sbuffer.h"
 
 dplist_t *sensorList;
+pthread_mutex_t bufferMutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t bufferNotEmptyCond = PTHREAD_COND_INITIALIZER;
 
 typedef struct
 {
@@ -41,7 +46,6 @@ void *element_copy(void *element)
 
 void element_free(void **element)
 {
-    //free(((my_element_t *)*element)->field);
     free(*element);
     *element = NULL;
 }
@@ -61,9 +65,9 @@ int element_compare(void *x, void *y)
 }
 
 
-void datamgr_parse_sensor_files(FILE *fp_sensor_map, FILE *fp_sensor_data) {
+void datamgr_parse_sensor_files(FILE *fp_sensor_map, sbuffer_t *buffer) {
 
-    ERROR_HANDLER(fp_sensor_map == NULL || fp_sensor_data == NULL, "Invalid parameters");
+    ERROR_HANDLER(fp_sensor_map == NULL || buffer == NULL, "Invalid parameters");
 
     //Als de lijst nog niet bestaat, maken we ze aan
     if (sensorList == NULL) {
@@ -106,7 +110,57 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, FILE *fp_sensor_data) {
     sensor_id_t fileSensorId;
     sensor_value_t temperature;
     sensor_ts_t timestamp;
-    while (fread(&fileSensorId, sizeof(fileSensorId), 1, fp_sensor_data) == 1 &&
+    sensor_data_t data;
+
+    while (1) {
+        pthread_mutex_lock(&bufferMutex);
+        while (sbuffer_is_empty(buffer)) {
+            // Als de buffer leeg is, wachten we tot hij niet meer leeg is
+            pthread_cond_wait(&bufferNotEmptyCond, &bufferMutex);
+        }
+        pthread_mutex_unlock(&bufferMutex);
+
+        int result = sbuffer_peek(buffer, &data);
+        if (result == SBUFFER_SUCCESS) {
+            fileSensorId = data.id;
+            temperature = data.value;
+            timestamp = data.ts;
+
+            //De code om het in de lijst te steken en de average te berekenen is hetzelfde gebleven
+            int index = dpl_get_index_of_element(sensorList, &fileSensorId);
+            if (index != -1) {
+                my_element_t *currentSensor = dpl_get_element_at_index(sensorList, index);
+                if (currentSensor->insertedData == RUN_AVG_LENGTH) {
+                    for (int i = 0; i < RUN_AVG_LENGTH - 1; i++) {
+                        currentSensor->runningAvg[i] = currentSensor->runningAvg[i + 1];
+                    }
+                    currentSensor->runningAvg[RUN_AVG_LENGTH - 1] = temperature;
+                } else {
+                    currentSensor->runningAvg[currentSensor->insertedData] = temperature;
+                    currentSensor->insertedData += 1;
+                }
+                currentSensor->lastModified = timestamp;
+            }
+            else {
+                printf(stderr, "Oei: sensor id " PRIu16 " niet gevonden in de sensor map\n", fileSensorId);
+            }
+        }
+        else {
+            //Als er een error is
+            //hier nog iets van error handling zetten
+        }
+
+
+
+    }
+
+
+
+
+
+
+
+    /*while (fread(&fileSensorId, sizeof(fileSensorId), 1, fp_sensor_data) == 1 &&
             fread(&temperature, sizeof(temperature), 1, fp_sensor_data) == 1 &&
             fread(&timestamp, sizeof(timestamp), 1, fp_sensor_data) == 1) {
         int index = dpl_get_index_of_element(sensorList, &fileSensorId);
@@ -127,7 +181,7 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, FILE *fp_sensor_data) {
         else {
             fprintf(stderr, "Oei: sensor id " PRIu16 " niet gevonden in de sensor map\n", fileSensorId);
         }
-    }
+    }*/
 }
 
 uint16_t datamgr_get_room_id(sensor_id_t sensor_id) {

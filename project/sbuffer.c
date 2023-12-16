@@ -145,3 +145,11 @@ int sbuffer_peek(sbuffer_t *buffer, sensor_data_t *data) {
     return SBUFFER_SUCCESS;
 }
 
+int sbuffer_is_empty(sbuffer_t *buffer) {
+    if (buffer == NULL) {
+        return 1;
+    }
+    //Als de head en de tail leeg zijn, dan is de lijst leeg
+    return (buffer->head == NULL && buffer->tail == NULL);
+}
+
