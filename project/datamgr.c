@@ -13,7 +13,7 @@
 
 dplist_t *sensorList;
 pthread_mutex_t bufferMutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t bufferNotEmptyCond = PTHREAD_COND_INITIALIZER;
+extern pthread_cond_t bufferNotEmptyCond;
 
 typedef struct
 {

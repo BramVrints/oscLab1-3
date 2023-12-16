@@ -9,6 +9,7 @@
 
 pthread_cond_t cond_var;
 pthread_cond_t cond_var_peek;
+static pthread_cond_t bufferNotEmptyCond = PTHREAD_COND_INITIALIZER;
 
 /**
  * basic node for the buffer, these nodes are linked together to create the buffer
@@ -37,6 +38,7 @@ int sbuffer_init(sbuffer_t **buffer) {
     //POSIX condition variables initialiseren:
     pthread_cond_init(&cond_var, NULL);
     pthread_cond_init(&cond_var_peek, NULL);
+    pthread_cond_init(&bufferNotEmptyCond, NULL);
     return SBUFFER_SUCCESS;
 }
 
@@ -124,6 +126,8 @@ int sbuffer_insert(sbuffer_t *buffer, sensor_data_t *data) {
     pthread_cond_signal(&cond_var);
     //kritische sectie terug vrijgeven
     pthread_mutex_unlock(&buffer->mutex);
+    //Signaleren aan de conditie variabele dat de buffer niet (meer) leeg is
+    pthread_cond_signal(&bufferNotEmptyCond);
     return SBUFFER_SUCCESS;
 }
 
