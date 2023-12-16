@@ -6,12 +6,15 @@
 #define _SBUFFER_H_
 
 #include "config.h"
+#include <pthread.h>
 
 #define SBUFFER_FAILURE -1
 #define SBUFFER_SUCCESS 0
 #define SBUFFER_NO_DATA 1
 
 typedef struct sbuffer sbuffer_t;
+
+extern pthread_cond_t bufferNotEmptyCond;
 
 /**
  * Allocates and initializes a new shared buffer

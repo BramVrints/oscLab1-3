@@ -142,7 +142,7 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, sbuffer_t *buffer) {
                 currentSensor->lastModified = timestamp;
             }
             else {
-                printf(stderr, "Oei: sensor id " PRIu16 " niet gevonden in de sensor map\n", fileSensorId);
+                printf("Fout bij uitlezen steken van de data in de lijst (datamgr)");
             }
         }
         else {

@@ -9,7 +9,8 @@
 
 pthread_cond_t cond_var;
 pthread_cond_t cond_var_peek;
-static pthread_cond_t bufferNotEmptyCond = PTHREAD_COND_INITIALIZER;
+pthread_cond_t bufferNotEmptyCond = PTHREAD_COND_INITIALIZER;
+static int peekDone = 0;
 
 /**
  * basic node for the buffer, these nodes are linked together to create the buffer
@@ -67,6 +68,10 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data) {
     //Kritische sectie
     pthread_mutex_lock(&buffer->mutex);
 
+    while (!peekDone) {
+        pthread_cond_wait(&cond_var_peek, &buffer->mutex);
+    }
+
     //Als de buffer leeg is gaat het niet, dus moeten we terug unlocken
     while (buffer->head == NULL) {
         pthread_cond_wait(&cond_var, &buffer->mutex);
@@ -92,6 +97,7 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data) {
 
     // Signaleren met de condition variable dat de data weg is, zodat de volgende peek kan gebeuren
     pthread_cond_signal(&cond_var_peek);
+    peekDone = 0;
 
     //Einde kritische sectie
     pthread_mutex_unlock(&buffer->mutex);
@@ -142,6 +148,8 @@ int sbuffer_peek(sbuffer_t *buffer, sensor_data_t *data) {
     }
 
     *data = buffer->head->data;
+
+    peekDone = 1;
 
     // Einde kritische sectie
     pthread_mutex_unlock(&buffer->mutex);
