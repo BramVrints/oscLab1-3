@@ -20,10 +20,11 @@ void *handle_client(void *arg);
 
 /**
  * Main function of the connection manager
- * \param argc number of command-line arguments
+ * \param MAXCONN number of command-line arguments
  * \param argv array of command-line arguments
  * \return 0 on success, -1 on failure
  */
-int main(int argc, char *argv[]);
+int connmgr_main(int MAX_CONN, int PORT);
+
 
 #endif //PROJECT_CONNMGR_H

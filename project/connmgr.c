@@ -6,6 +6,7 @@
  */
 
 #include <stdio.h>
+#include "connmgr.h"
 #include <stdlib.h>
 //#include <inttypes.h>
 #include <pthread.h>
@@ -22,19 +23,14 @@ typedef struct {
     sbuffer_t *buffer;
 } ThreadArgs;
 
-void *handle_client(void *arg);
+//void *handle_client(void *arg);
 
 pthread_mutex_t connCounterMutex = PTHREAD_MUTEX_INITIALIZER;
 int conn_counter = 0;
 
-
-int main(int argc, char *argv[]) {
+int connmgr_main(int MAX_CONN, int PORT) {
     tcpsock_t *server, *client;
 
-    if(argc < 3) {
-        printf("Please provide the right arguments: first the port, then the max nb of clients");
-        return -1;
-    }
 
     // Shared buffer initialization
     sbuffer_t *buffer;
@@ -43,8 +39,6 @@ int main(int argc, char *argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    int MAX_CONN = atoi(argv[2]);
-    int PORT = atoi(argv[1]);
 
     printf("Test server is started\n");
     if (tcp_passive_open(&server, PORT) != TCP_NO_ERROR) exit(EXIT_FAILURE);
@@ -77,7 +71,11 @@ int main(int argc, char *argv[]) {
         pthread_join(pid[i], NULL);
     }
 
-
+    //end of stream marker toevoegen
+    sensor_data_t *data = malloc(sizeof(sensor_data_t));
+    printf("Writer thread: end of stream marker wordt toegevoegd\n");
+    data->id = 0;
+    sbuffer_insert(buffer, data);
     printf("Test server is shutting down\n");
 
     return 0;

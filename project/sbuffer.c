@@ -154,6 +154,8 @@ int sbuffer_peek(sbuffer_t *buffer, sensor_data_t *data) {
     // Einde kritische sectie
     pthread_mutex_unlock(&buffer->mutex);
 
+    if (data->id == 0) return SBUFFER_NO_DATA;
+
     return SBUFFER_SUCCESS;
 }
 

@@ -72,8 +72,8 @@ SOURCE = main.c connmgr.c datamgr.c sbuffer.c sensor_db.c lib/dplist.c lib/tcpso
 connmgr: main.c connmgr.c sbuffer.c lib/dplist.c lib/tcpsock.c
 	gcc -Wall -pthread -o connmgr main.c connmgr.c sbuffer.c lib/dplist.c lib/tcpsock.c
 
-datamgr: main.c datamgr.c sbuffer.c lib/dplist.c
-	gcc -Wall -pthread -o datamgr main.c datamgr.c sbuffer.c lib/dplist.c -g
+datamgr: main.c datamgr.c connmgr.c sbuffer.c lib/dplist.c lib/tcpsock.c
+	gcc -Wall -pthread -o datamgr main.c datamgr.c connmgr.c sbuffer.c lib/dplist.c lib/tcpsock.c -g
 
 
 clean_incrementals:

@@ -52,18 +52,12 @@ void element_free(void **element)
 
 int element_compare(void *x, void *y)
 {
-    //we gaan roomId vergelijken
-    if (((my_element_t *)x)->roomId < ((my_element_t*)y)->roomId) { return -1;}
-    else if (((my_element_t *)x)->roomId > ((my_element_t *)y)->roomId) { return -1;}
-
-    else {
-        //als roomid hetzelfde is, gaan we kijken naar sensorid
-        if (((my_element_t *)x)->sensorId < ((my_element_t *)y)->sensorId) { return -1;}
-        else if (((my_element_t *)x)->sensorId > ((my_element_t *)y)->sensorId) { return 1;}
-        else { return 0;}
-    }
+    sensor_id_t xid = ((my_element_t *)x)->sensorId;
+    sensor_id_t yid = ((my_element_t *)y)->sensorId;
+    sensor_id_t  diff = xid - yid;
+    if (diff != 0) { diff = -1;}
+    return diff;
 }
-
 
 void datamgr_parse_sensor_files(FILE *fp_sensor_map, sbuffer_t *buffer) {
 
@@ -110,9 +104,13 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, sbuffer_t *buffer) {
     sensor_id_t fileSensorId;
     sensor_value_t temperature;
     sensor_ts_t timestamp;
-    sensor_data_t data;
+    sensor_data_t *data;
+    data = (sensor_data_t *) malloc(sizeof(sensor_data_t ));
 
     while (1) {
+        if (sbuffer_peek(buffer, data) == SBUFFER_NO_DATA) {
+            break;
+        }
         pthread_mutex_lock(&bufferMutex);
         while (sbuffer_is_empty(buffer)) {
             // Als de buffer leeg is, wachten we tot hij niet meer leeg is
@@ -120,14 +118,16 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, sbuffer_t *buffer) {
         }
         pthread_mutex_unlock(&bufferMutex);
 
-        int result = sbuffer_peek(buffer, &data);
+        int result = sbuffer_peek(buffer, data);
         if (result == SBUFFER_SUCCESS) {
-            fileSensorId = data.id;
-            temperature = data.value;
-            timestamp = data.ts;
+            fileSensorId = data->id;
+            temperature = data->value;
+            timestamp = data->ts;
 
             //De code om het in de lijst te steken en de average te berekenen is hetzelfde gebleven
-            int index = dpl_get_index_of_element(sensorList, &fileSensorId);
+            my_element_t elem;
+            elem.sensorId = fileSensorId;
+            int index = dpl_get_index_of_element(sensorList, &elem);
             if (index != -1) {
                 my_element_t *currentSensor = dpl_get_element_at_index(sensorList, index);
                 if (currentSensor->insertedData == RUN_AVG_LENGTH) {
@@ -142,7 +142,7 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, sbuffer_t *buffer) {
                 currentSensor->lastModified = timestamp;
             }
             else {
-                printf("Fout bij uitlezen steken van de data in de lijst (datamgr)");
+                printf("Fout bij uitlezen steken van de data in de lijst (datamgr)\n");
             }
         }
         else {
