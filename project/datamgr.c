@@ -114,7 +114,6 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, sbuffer_t *buffer) {
             break;
         }
 
-
         if (result == SBUFFER_SUCCESS) {
             fileSensorId = data->id;
             temperature = data->value;

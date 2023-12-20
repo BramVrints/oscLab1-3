@@ -94,6 +94,7 @@ void *handle_client(void *arg) {
             //Instantie van sensor data kopiëren om thread safety te waarborgen
             //Anders kan het zijn dat de client de data aanpastt vooraleer het gekopiëerd is in de buffer
             //Want de mutex lock zit IN de sbuffer_insert
+            printf("test connmgr\n");
             sensor_data_t dataToCopy;
             dataToCopy.id = data.id;
             dataToCopy.value = data.value;

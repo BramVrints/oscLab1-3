@@ -77,10 +77,6 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data) {
         pthread_cond_wait(&cond_var_peek, &buffer->mutex);
     }
 
-    /*//Als de buffer leeg is gaat het niet, dus moeten we terug unlocken
-    while (buffer->head == NULL) {
-        pthread_cond_wait(&cond_var, &buffer->mutex);
-    }*/
 
     *data = buffer->head->data;
 
@@ -88,7 +84,7 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data) {
     if (data->id == 0) {
         //pthread_cond_signal(&cond_var);
         pthread_mutex_unlock(&buffer->mutex);
-        return SBUFFER_SUCCESS;
+        return SBUFFER_NO_DATA;
     }
 
     dummy = buffer->head;

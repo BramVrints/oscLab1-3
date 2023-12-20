@@ -75,6 +75,9 @@ connmgr: main.c connmgr.c sbuffer.c lib/dplist.c lib/tcpsock.c
 datamgr: main.c datamgr.c connmgr.c sbuffer.c lib/dplist.c lib/tcpsock.c
 	gcc -Wall -pthread -o datamgr main.c datamgr.c connmgr.c sbuffer.c lib/dplist.c lib/tcpsock.c -g
 
+storagemgr: main.c datamgr.c connmgr.c sensor_db.c sbuffer.c lib/dplist.c lib/tcpsock.c
+	gcc -Wall -pthread -o storagemgr main.c datamgr.c connmgr.c sensor_db.c sbuffer.c lib/dplist.c lib/tcpsock.c -g
+
 
 
 clean_incrementals:
