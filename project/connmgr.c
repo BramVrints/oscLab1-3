@@ -28,16 +28,16 @@ typedef struct {
 pthread_mutex_t connCounterMutex = PTHREAD_MUTEX_INITIALIZER;
 int conn_counter = 0;
 
-int connmgr_main(int MAX_CONN, int PORT) {
+int connmgr_main(int MAX_CONN, int PORT, sbuffer_t *buffer) {
     tcpsock_t *server, *client;
 
 
-    // Shared buffer initialization
+    /*// Shared buffer initialization
     sbuffer_t *buffer;
     if (sbuffer_init(&buffer) != SBUFFER_SUCCESS) {
         fprintf(stderr, "Buffer initialization failed\n");
         exit(EXIT_FAILURE);
-    }
+    }*/
 
 
     printf("Test server is started\n");

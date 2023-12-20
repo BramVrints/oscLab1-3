@@ -5,12 +5,15 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <semaphore.h>
 #include "sbuffer.h"
 
 pthread_cond_t cond_var;
 pthread_cond_t cond_var_peek;
-pthread_cond_t bufferNotEmptyCond = PTHREAD_COND_INITIALIZER;
-static int peekDone = 0;
+int peekDone = 0;
+
+//pthread_cond_t bufferNotEmptyCond = PTHREAD_COND_INITIALIZER;
+//sem_t removeSemaphore;
 
 /**
  * basic node for the buffer, these nodes are linked together to create the buffer
@@ -39,7 +42,9 @@ int sbuffer_init(sbuffer_t **buffer) {
     //POSIX condition variables initialiseren:
     pthread_cond_init(&cond_var, NULL);
     pthread_cond_init(&cond_var_peek, NULL);
-    pthread_cond_init(&bufferNotEmptyCond, NULL);
+    //pthread_cond_init(&bufferNotEmptyCond, NULL);
+    //Semafoor initialiseren:
+    //sem_init(&removeSemaphore, 0,0);
     return SBUFFER_SUCCESS;
 }
 
@@ -68,20 +73,20 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data) {
     //Kritische sectie
     pthread_mutex_lock(&buffer->mutex);
 
-    while (!peekDone) {
+    while (peekDone == 0) {
         pthread_cond_wait(&cond_var_peek, &buffer->mutex);
     }
 
-    //Als de buffer leeg is gaat het niet, dus moeten we terug unlocken
+    /*//Als de buffer leeg is gaat het niet, dus moeten we terug unlocken
     while (buffer->head == NULL) {
         pthread_cond_wait(&cond_var, &buffer->mutex);
-    }
+    }*/
 
     *data = buffer->head->data;
 
     //Als het de end of stream character is:
     if (data->id == 0) {
-        pthread_cond_signal(&cond_var);
+        //pthread_cond_signal(&cond_var);
         pthread_mutex_unlock(&buffer->mutex);
         return SBUFFER_SUCCESS;
     }
@@ -96,8 +101,8 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data) {
     }
 
     // Signaleren met de condition variable dat de data weg is, zodat de volgende peek kan gebeuren
-    pthread_cond_signal(&cond_var_peek);
     peekDone = 0;
+    pthread_cond_signal(&cond_var_peek);
 
     //Einde kritische sectie
     pthread_mutex_unlock(&buffer->mutex);
@@ -129,11 +134,12 @@ int sbuffer_insert(sbuffer_t *buffer, sensor_data_t *data) {
         buffer->tail = buffer->tail->next;
     }
 
+    //Connection manager signalt de data manager dat hij er iets heeft ingestoken:
     pthread_cond_signal(&cond_var);
     //kritische sectie terug vrijgeven
     pthread_mutex_unlock(&buffer->mutex);
     //Signaleren aan de conditie variabele dat de buffer niet (meer) leeg is
-    pthread_cond_signal(&bufferNotEmptyCond);
+    //pthread_cond_signal(&bufferNotEmptyCond);
     return SBUFFER_SUCCESS;
 }
 
@@ -143,6 +149,10 @@ int sbuffer_peek(sbuffer_t *buffer, sensor_data_t *data) {
     // Kritische sectie
     pthread_mutex_lock(&buffer->mutex);
 
+    while (peekDone == 1) {
+        pthread_cond_wait(&cond_var_peek, &buffer->mutex);
+    }
+
     while (buffer->head == NULL) {
         pthread_cond_wait(&cond_var, &buffer->mutex);
     }
@@ -150,6 +160,10 @@ int sbuffer_peek(sbuffer_t *buffer, sensor_data_t *data) {
     *data = buffer->head->data;
 
     peekDone = 1;
+    pthread_cond_signal(&cond_var_peek);
+
+
+
 
     // Einde kritische sectie
     pthread_mutex_unlock(&buffer->mutex);

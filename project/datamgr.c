@@ -108,21 +108,27 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, sbuffer_t *buffer) {
     data = (sensor_data_t *) malloc(sizeof(sensor_data_t ));
 
     while (1) {
-        if (sbuffer_peek(buffer, data) == SBUFFER_NO_DATA) {
+        int result = sbuffer_peek(buffer, data);
+
+        if (result == SBUFFER_NO_DATA) {
             break;
         }
-        pthread_mutex_lock(&bufferMutex);
+        /*pthread_mutex_lock(&bufferMutex);
         while (sbuffer_is_empty(buffer)) {
             // Als de buffer leeg is, wachten we tot hij niet meer leeg is
             pthread_cond_wait(&bufferNotEmptyCond, &bufferMutex);
         }
-        pthread_mutex_unlock(&bufferMutex);
+        pthread_mutex_unlock(&bufferMutex);*/
 
-        int result = sbuffer_peek(buffer, data);
+
         if (result == SBUFFER_SUCCESS) {
             fileSensorId = data->id;
             temperature = data->value;
             timestamp = data->ts;
+            printf("Sensor id %d \n", fileSensorId);
+            printf("Temperature id %lf \n", temperature);
+            printf("Timestamp id %ld \n", timestamp);
+
 
             //De code om het in de lijst te steken en de average te berekenen is hetzelfde gebleven
             my_element_t elem;
