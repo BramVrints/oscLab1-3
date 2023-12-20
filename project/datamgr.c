@@ -113,21 +113,15 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, sbuffer_t *buffer) {
         if (result == SBUFFER_NO_DATA) {
             break;
         }
-        /*pthread_mutex_lock(&bufferMutex);
-        while (sbuffer_is_empty(buffer)) {
-            // Als de buffer leeg is, wachten we tot hij niet meer leeg is
-            pthread_cond_wait(&bufferNotEmptyCond, &bufferMutex);
-        }
-        pthread_mutex_unlock(&bufferMutex);*/
 
 
         if (result == SBUFFER_SUCCESS) {
             fileSensorId = data->id;
             temperature = data->value;
             timestamp = data->ts;
-            printf("Sensor id %d \n", fileSensorId);
-            printf("Temperature id %lf \n", temperature);
-            printf("Timestamp id %ld \n", timestamp);
+            printf("datamgr.c: Sensor id %d \n", fileSensorId);
+            printf("datamgr.c: Temperature id %lf \n", temperature);
+            printf("datamgr.c: Timestamp id %ld \n", timestamp);
 
 
             //De code om het in de lijst te steken en de average te berekenen is hetzelfde gebleven
@@ -148,7 +142,7 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, sbuffer_t *buffer) {
                 currentSensor->lastModified = timestamp;
             }
             else {
-                printf("Fout bij uitlezen steken van de data in de lijst (datamgr)\n");
+                printf("datamgr.c: Fout bij uitlezen steken van de data in de lijst\n");
             }
         }
         else {

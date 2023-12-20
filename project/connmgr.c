@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include "connmgr.h"
 #include <stdlib.h>
-//#include <inttypes.h>
 #include <pthread.h>
 #include "config.h"
 #include "sbuffer.h"
@@ -23,26 +22,15 @@ typedef struct {
     sbuffer_t *buffer;
 } ThreadArgs;
 
-//void *handle_client(void *arg);
-
 pthread_mutex_t connCounterMutex = PTHREAD_MUTEX_INITIALIZER;
 int conn_counter = 0;
 
 int connmgr_main(int MAX_CONN, int PORT, sbuffer_t *buffer) {
     tcpsock_t *server, *client;
 
-
-    /*// Shared buffer initialization
-    sbuffer_t *buffer;
-    if (sbuffer_init(&buffer) != SBUFFER_SUCCESS) {
-        fprintf(stderr, "Buffer initialization failed\n");
-        exit(EXIT_FAILURE);
-    }*/
-
-
-    printf("Test server is started\n");
+    printf("connmgr.c: Test server is started\n");
     if (tcp_passive_open(&server, PORT) != TCP_NO_ERROR) exit(EXIT_FAILURE);
-    printf("Connectie is geopend");
+    printf("connmgr.c: Connectie is geopend\n");
     pthread_t pid[MAX_CONN];
     do {
         if (tcp_wait_for_connection(server, &client) != TCP_NO_ERROR) exit(EXIT_FAILURE);
@@ -73,10 +61,10 @@ int connmgr_main(int MAX_CONN, int PORT, sbuffer_t *buffer) {
 
     //end of stream marker toevoegen
     sensor_data_t *data = malloc(sizeof(sensor_data_t));
-    printf("Writer thread: end of stream marker wordt toegevoegd\n");
+    printf("connmgr.c: Writer thread: end of stream marker wordt toegevoegd\n");
     data->id = 0;
     sbuffer_insert(buffer, data);
-    printf("Test server is shutting down\n");
+    printf("connmgr.c: Test server is shutting down\n");
 
     return 0;
 }
@@ -92,15 +80,15 @@ void *handle_client(void *arg) {
         // read sensor ID
         bytes = sizeof(data.id);
         result = tcp_receive(client, (void *) &data.id, &bytes);
-        printf("sensor id ontvangen\n");
+        printf("connmgr.c: sensor id: %d\n", data.id);
         // read temperature
         bytes = sizeof(data.value);
         result = tcp_receive(client, (void *) &data.value, &bytes);
-        printf("temperatuur ontvangen\n");
+        printf("connmgr.c: temperatuur: %lf\n", data.value);
         // read timestamp
         bytes = sizeof(data.ts);
         result = tcp_receive(client, (void *) &data.ts, &bytes);
-        printf("timestamp ontvangen\n");
+        printf("connmgr.c: timestamp: %ld\n", data.ts);
 
         if ((result == TCP_NO_ERROR) && bytes) {
             //Instantie van sensor data kopiëren om thread safety te waarborgen
@@ -111,18 +99,17 @@ void *handle_client(void *arg) {
             dataToCopy.value = data.value;
             dataToCopy.ts = data.ts;
             if (sbuffer_insert(buffer, &dataToCopy) == SBUFFER_SUCCESS) {
-                printf("Data in buffer inserted\n");
+                printf("connmgr.c: Data in buffer inserted\n");
             }
         }
     } while (result == TCP_NO_ERROR);
 
     if (result == TCP_CONNECTION_CLOSED)
-        printf("Peer has closed connection\n");
+        printf("connmgr.c: Peer has closed connection\n");
     else
-        printf("Error occured on connection to peer\n");
+        printf("connmgr.c: Error occured on connection to peer\n");
 
     tcp_close(&client);
 
     return NULL;
 }
-
