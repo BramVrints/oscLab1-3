@@ -5,18 +5,12 @@
 #include "sbuffer.h"
 #include "config.h"
 #include <stdio.h>
-//#include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
 #include <stdbool.h>
-//#include <wait.h>
 #include <inttypes.h>
 
 #define MAX_STR_LEN 255
 
-//Dit moet in de main.c:
-//#define READ_END 0
-//#define WRITE_END 1
 
 char msg[MAX_STR_LEN];
 
@@ -30,57 +24,6 @@ FILE * open_db(char * filename, bool append) {
     else {
         return fopen(filename, "w");
     }
-
-//dit moet in main.c komen:
-    /*create_log_process();
-    char wmsg[MAX_STR_LEN];
-    char rmsg[MAX_STR_LEN];
-    int logPipe[2];
-
-    if (pipe(logPipe) == -1) {
-        perror("Pipe maken voor logger lukt niet");
-    }
-
-    pid_t loggerPid = fork();
-    if (loggerPid < 0) {
-        fprintf(stderr, "Fork mislukt");
-        return NULL;
-    }
-
-    if (loggerPid == 0) {
-        close(logPipe[WRITE_END]); //write einde van de pipe sluiten
-        read(logPipe[READ_END], rmsg, MAX_STR_LEN);
-        if (strcmp(rmsg, "Bericht") != 0) {
-            write_to_log_process("Log file kan niet geopend worden");
-        }
-        else {
-            write_to_log_process("Data file opened.");
-        }
-        close(logPipe[READ_END]);
-        exit(EXIT_SUCCESS);
-    }
-
-    else {
-        close(logPipe[READ_END]);
-        write(logPipe[WRITE_END], "Bericht", strlen("Bericht") + 1);
-        if (append) {
-            csvFile = fopen(filename, "a");
-        }
-        else {
-            csvFile = fopen(filename, "w");
-        }
-
-        if (csvFile == NULL) {
-            write(logPipe[WRITE_END], "Mislukt", strlen("Mislukt") +1);
-        }
-        else {
-            write(logPipe[WRITE_END], "Gelukt", strlen("Gelukt") +1);
-        }
-        close(logPipe[WRITE_END]);
-        wait(NULL);
-    }
-
-    return csvFile;*/
 }
 
 void process_sensor_data_from_sbuffer(FILE * f, sbuffer_t *buffer) {
