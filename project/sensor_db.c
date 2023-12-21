@@ -41,7 +41,7 @@ void process_sensor_data_from_sbuffer(FILE * f, sbuffer_t *buffer) {
 
         else {
             fprintf(stderr, "Error receiving data from sbuffer.\n");
-            printf("sensor_db.c: Fout bij uitlezen steken van de data in de lijst\n");
+            //printf("sensor_db.c: Fout bij uitlezen steken van de data in de lijst\n");
         }
     }
 }

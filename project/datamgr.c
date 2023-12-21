@@ -116,9 +116,9 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, sbuffer_t *buffer) {
             fileSensorId = data->id;
             temperature = data->value;
             timestamp = data->ts;
-            printf("datamgr.c: Sensor id %d \n", fileSensorId);
+            /*printf("datamgr.c: Sensor id %d \n", fileSensorId);
             printf("datamgr.c: Temperature id %lf \n", temperature);
-            printf("datamgr.c: Timestamp id %ld \n", timestamp);
+            printf("datamgr.c: Timestamp id %ld \n", timestamp);*/
 
             //De code om het in de lijst te steken en de average te berekenen is hetzelfde gebleven
             my_element_t elem;
@@ -150,7 +150,7 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, sbuffer_t *buffer) {
                 }
             }
             else {
-                printf("datamgr.c: Fout bij uitlezen steken van de data in de lijst\n");
+                //printf("datamgr.c: Fout bij uitlezen steken van de data in de lijst\n");
                 sprintf(msg, "Received sensor data with invalid sensor node ID %d", data->id);
                 write_to_log_process(msg);
             }

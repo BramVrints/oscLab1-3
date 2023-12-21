@@ -96,15 +96,15 @@ int main(int argc, char *argv[]) {
         pthread_create(&processThreads[0], &processThreadsAttr, startconnmgr, NULL);
         pthread_create(&processThreads[1], &processThreadsAttr, startdatamgr, NULL);
         pthread_create(&processThreads[2], &processThreadsAttr, startstoragemgr, NULL);
-        printf("main.c: Threads created\n");
+        //printf("main.c: Threads created\n");
 
         //threads joinen
         pthread_join(processThreads[0],NULL);
-        printf("main.c: Connection manager joined\n");
+        //printf("main.c: Connection manager joined\n");
         pthread_join(processThreads[1],NULL);
-        printf("main.c: Data manager joined\n");
+        //printf("main.c: Data manager joined\n");
         pthread_join(processThreads[2], NULL);
-        printf("main.c: Storage manager joined\n");
+        //printf("main.c: Storage manager joined\n");
 
         //aangeven aan logger dat het gedaan is met end of log character
         write(logPipe[WRITE_END], "$", 1);
@@ -113,7 +113,7 @@ int main(int argc, char *argv[]) {
         //opkuisen
         wait(NULL);
         sbuffer_free(&buffer);
-        printf("main.c: Buffer gefreet, programma sluit af\n");
+        //printf("main.c: Buffer gefreet, programma sluit af\n");
         return 0;
     }
 }

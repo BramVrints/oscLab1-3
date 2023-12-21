@@ -29,9 +29,9 @@ int conn_counter = 0;
 int connmgr_main(int MAX_CONN, int PORT, sbuffer_t *buffer) {
     tcpsock_t *server, *client;
 
-    printf("connmgr.c: Test server is started\n");
+    //printf("connmgr.c: Test server is started\n");
     if (tcp_passive_open(&server, PORT) != TCP_NO_ERROR) exit(EXIT_FAILURE);
-    printf("connmgr.c: Connectie is geopend\n");
+    //printf("connmgr.c: Connectie is geopend\n");
     pthread_t pid[MAX_CONN];
     pthread_attr_t threadAttr;
     pthread_attr_init(&threadAttr);
@@ -64,10 +64,10 @@ int connmgr_main(int MAX_CONN, int PORT, sbuffer_t *buffer) {
 
     //end of stream marker toevoegen
     sensor_data_t *data = malloc(sizeof(sensor_data_t));
-    printf("connmgr.c: Writer thread: end of stream marker wordt toegevoegd\n");
+    //printf("connmgr.c: Writer thread: end of stream marker wordt toegevoegd\n");
     data->id = 0;
     sbuffer_insert(buffer, data);
-    printf("connmgr.c: Test server is shutting down\n");
+    //printf("connmgr.c: Test server is shutting down\n");
 
     return 0;
 }
@@ -100,7 +100,7 @@ void *handle_client(void *arg) {
 
         if ((result == TCP_NO_ERROR) && bytes) {
             if (sbuffer_insert(buffer, &data) == SBUFFER_SUCCESS) {
-                printf("connmgr.c: Data in buffer inserted\n");
+                //printf("connmgr.c: Data in buffer inserted\n");
                 /*printf("connmgr.c: sensor id: %d\n", data.id);
                 printf("connmgr.c: temperatuur: %lf\n", data.value);
                 printf("connmgr.c: timestamp: %ld\n", data.ts);*/
@@ -110,17 +110,15 @@ void *handle_client(void *arg) {
     } while (result == TCP_NO_ERROR);
 
     if (result == TCP_CONNECTION_CLOSED) {
-        printf("connmgr.c: Peer has closed connection\n");
+        //printf("connmgr.c: Peer has closed connection\n");
         sprintf(msg, "Sensor node %d has closed the connection.", data.id);
         write_to_log_process(msg);
     }
-
     else {
-        printf("connmgr.c: Error occured on connection to peer\n");
-        printf("result: %d, id: %d\n", result, data.id);
+        //printf("connmgr.c: Error occured on connection to peer\n");
+        //printf("result: %d, id: %d\n", result, data.id);
     }
 
     tcp_close(&client);
-
     return NULL;
 }
