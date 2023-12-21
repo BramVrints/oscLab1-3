@@ -20,6 +20,7 @@ sbuffer_t *buffer;
 pthread_t processThreads[3];
 pthread_attr_t processThreadsAttr;
 pthread_mutex_t pipeMutex;
+int counter = 0;
 
 int MAX_CONN;
 int PORT;
@@ -67,16 +68,13 @@ int main(int argc, char *argv[]) {
         close(logPipe[WRITE_END]);
         char character;
         while (1) {
-            //hier nog bijvullen om te loggen
-
-
-
-
-
-
-
-
-
+            //de pipe byte per byte uitlezen
+            read(logPipe[0], &character, 1);
+            if (character == '$') {
+                break;
+            }
+            fwrite(&character, 1, 1, logFile);
+            fflush(logFile);
         }
         close(logPipe[READ_END]);
         fclose(logFile);
@@ -108,8 +106,8 @@ int main(int argc, char *argv[]) {
         pthread_join(processThreads[2], NULL);
         printf("main.c: Storage manager joined\n");
 
-        //aangeven aan logger dat het gedaan is
-        write(logPipe[WRITE_END], "\t", 1);
+        //aangeven aan logger dat het gedaan is met end of log character
+        write(logPipe[WRITE_END], "$", 1);
         close(logPipe[WRITE_END]);
 
         //opkuisen
@@ -120,18 +118,19 @@ int main(int argc, char *argv[]) {
     }
 }
 
-void write_to_log_process(char *msg) {
+int write_to_log_process(char *msg) {
     //kritische sectie
     pthread_mutex_lock(&pipeMutex);
+    //Deze code komt uit de slides van de feedback van milestone 2
     time_t tijd = time(NULL);
-    //De tijd omzetten naar een string:
     char *tijdString = ctime(&tijd);
-
-
+    tijdString[strlen(tijdString)-1] = '\0';
+    snprintf(wmsg, MAX_STR_LEN, "%d - %s - %s\n", counter++, tijdString, msg);
     long pipeResult = write(logPipe[WRITE_END], wmsg, strlen(wmsg));
-
-
-
-
-
+    //einde kritische sectie
+    pthread_mutex_unlock(&pipeMutex);
+    if (pipeResult == -1) {
+        return -1;
+    }
+    return 0;
 }

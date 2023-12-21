@@ -16,7 +16,7 @@ char msg[MAX_STR_LEN];
 
 FILE * open_db(char * filename, bool append) {
     sprintf(msg, "A new data.csv file has been created.");
-    //write_to_log_process(msg);
+    write_to_log_process(msg);
 
     if (append == true) {
         return fopen(filename, "a");
@@ -51,7 +51,7 @@ void process_sensor_data_from_sbuffer(FILE * f, sbuffer_t *buffer) {
 
 int insert_sensor(FILE * f, sensor_id_t id, sensor_value_t value, sensor_ts_t ts) {
     if (f == NULL) {
-        //write_to_log_process("An error occurred when writing to the csv file.");
+        write_to_log_process("An error occurred when writing to the csv file.");
         return -1;
     }
 
@@ -60,23 +60,23 @@ int insert_sensor(FILE * f, sensor_id_t id, sensor_value_t value, sensor_ts_t ts
 
     //Als er een fout gebeurt, is resultaat < 0, anders stelt resultaat het aantal succesvol geschreven karakters voor
     if (resultaat < 0) {
-        //write_to_log_process("An error occurred when writing to the csv file.");
+        write_to_log_process("An error occurred when writing to the csv file.");
         return -1;
     }
 
     sprintf(msg, "Data insertion from sensor %d succeeded.", id);
-    //write_to_log_process(msg);
+    write_to_log_process(msg);
     return 0;
 }
 
 int close_db(FILE * f) {
     if (f == NULL) {
-        //write_to_log_process("Invalid pointer to the csv file");
+        write_to_log_process("Invalid pointer to the csv file");
         return -1;
     }
     else {
         fclose(f);
-        //write_to_log_process("The data.csv file has been closed.");
+        write_to_log_process("The data.csv file has been closed.");
         return 0;
     }
 }
