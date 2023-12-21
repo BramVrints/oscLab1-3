@@ -43,12 +43,6 @@
 void datamgr_parse_sensor_files(FILE *fp_sensor_map, sbuffer_t *buffer);
 
 /**
- * This method should be called to clean up the datamgr, and to free all used memory. 
- * After this, any call to datamgr_get_room_id, datamgr_get_avg, datamgr_get_last_modified or datamgr_get_total_sensors will not return a valid result
- */
-void datamgr_free();
-
-/**
  * Gets the room ID for a certain sensor ID
  * Use ERROR_HANDLER() if sensor_id is invalid
  * \param sensor_id the sensor id to look for

@@ -14,7 +14,6 @@
 
 typedef struct sbuffer sbuffer_t;
 
-extern pthread_cond_t bufferNotEmptyCond;
 
 /**
  * Allocates and initializes a new shared buffer
@@ -54,12 +53,5 @@ int sbuffer_insert(sbuffer_t *buffer, sensor_data_t *data);
  * \return SBUFFER_SUCCESS on success and SBUFFER_FAILURE if an error occurred
  */
 int sbuffer_peek(sbuffer_t *buffer, sensor_data_t *data);
-
-/**
- * Checks whether the buffer is empty
- * @param buffer a pointer to the buffer that is used
- * @return 1 or 0, to indicate whether it is empty or not
- */
-int sbuffer_is_empty(sbuffer_t *buffer);
 
 #endif  //_SBUFFER_H_
