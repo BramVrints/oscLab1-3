@@ -5,15 +5,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <pthread.h>
 #include "datamgr.h"
 #include "lib/dplist.h"
 #include "sbuffer.h"
+#include "config.h"
 
 dplist_t *sensorList;
-pthread_mutex_t bufferMutex = PTHREAD_MUTEX_INITIALIZER;
-//extern pthread_cond_t bufferNotEmptyCond;
 
 typedef struct
 {
@@ -93,11 +90,12 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, sbuffer_t *buffer) {
             newSensor->insertedData = 0;
             newSensor->lastModified = 0;
             dpl_insert_at_index(sensorList, newSensor, dpl_size(sensorList), true);
+
+            //opkuisen
             free(newSensor->runningAvg);
             free(newSensor);
         }
     }
-
 
     //we gaan sensor data uitlezen en de gegevens bij de bijhorende sensoren in de lijst steken
     //dit moet uit de buffer lezen, niet meer uit een file
@@ -122,10 +120,10 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, sbuffer_t *buffer) {
             printf("datamgr.c: Temperature id %lf \n", temperature);
             printf("datamgr.c: Timestamp id %ld \n", timestamp);
 
-
             //De code om het in de lijst te steken en de average te berekenen is hetzelfde gebleven
             my_element_t elem;
             elem.sensorId = fileSensorId;
+            char msg[MAX_STR_LEN];
             int index = dpl_get_index_of_element(sensorList, &elem);
             if (index != -1) {
                 my_element_t *currentSensor = dpl_get_element_at_index(sensorList, index);
@@ -139,48 +137,28 @@ void datamgr_parse_sensor_files(FILE *fp_sensor_map, sbuffer_t *buffer) {
                     currentSensor->insertedData += 1;
                 }
                 currentSensor->lastModified = timestamp;
+
+                //loggen voor te warm of te koud
+                double avg = datamgr_get_avg(currentSensor->sensorId);
+                if (avg > SET_MAX_TEMP) {
+                    snprintf(msg, 255, "Sensor node %d reports it's too hot (avg temp = %lf).", currentSensor->sensorId, avg);
+                    write_to_log_process(msg);
+                }
+                else if (avg < SET_MIN_TEMP) {
+                    snprintf(msg, 255, "Sensor node %d reports it's too cold (avg temp = %lf).", currentSensor->sensorId, avg);
+                    write_to_log_process(msg);
+                }
             }
             else {
                 printf("datamgr.c: Fout bij uitlezen steken van de data in de lijst\n");
+                sprintf(msg, "Received sensor data with invalid sensor node ID %d", data->id);
+                write_to_log_process(msg);
             }
         }
         else {
-            //Als er een error is
-            //hier nog iets van error handling zetten
+            exit(EXIT_FAILURE);
         }
-
-
-
     }
-
-
-
-
-
-
-
-    /*while (fread(&fileSensorId, sizeof(fileSensorId), 1, fp_sensor_data) == 1 &&
-            fread(&temperature, sizeof(temperature), 1, fp_sensor_data) == 1 &&
-            fread(&timestamp, sizeof(timestamp), 1, fp_sensor_data) == 1) {
-        int index = dpl_get_index_of_element(sensorList, &fileSensorId);
-        if (index != -1) {
-            my_element_t *currentSensor = dpl_get_element_at_index(sensorList, index);
-            if (currentSensor->insertedData == RUN_AVG_LENGTH) {
-                for (int i = 0; i < RUN_AVG_LENGTH - 1; i++) {
-                    currentSensor->runningAvg[i] = currentSensor->runningAvg[i+1];
-                }
-                currentSensor->runningAvg[RUN_AVG_LENGTH-1] = temperature;
-            }
-            else {
-                currentSensor->runningAvg[currentSensor->insertedData] = temperature;
-                currentSensor->insertedData += 1;
-            }
-            currentSensor->lastModified = timestamp;
-        }
-        else {
-            fprintf(stderr, "Oei: sensor id " PRIu16 " niet gevonden in de sensor map\n", fileSensorId);
-        }
-    }*/
 }
 
 uint16_t datamgr_get_room_id(sensor_id_t sensor_id) {
@@ -193,7 +171,9 @@ uint16_t datamgr_get_room_id(sensor_id_t sensor_id) {
 
 sensor_value_t datamgr_get_avg(sensor_id_t sensor_id) {
     ERROR_HANDLER(sensor_id < 0, "Ongeldige sensor ID");
-    int index = dpl_get_index_of_element(sensorList, &sensor_id);
+    my_element_t data;
+    data.sensorId = sensor_id;
+    int index = dpl_get_index_of_element(sensorList, &data);
     ERROR_HANDLER(index == -1, "Sensor ID niet gevonden in de lijst");
     my_element_t *sensor = dpl_get_element_at_index(sensorList, index);
 
@@ -217,4 +197,3 @@ time_t datamgr_get_last_modified(sensor_id_t sensor_id) {
 int datamgr_get_total_sensors() {
     return dpl_size(sensorList);
 }
-

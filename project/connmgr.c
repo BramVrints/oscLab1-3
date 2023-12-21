@@ -25,6 +25,7 @@ typedef struct {
 pthread_mutex_t connCounterMutex = PTHREAD_MUTEX_INITIALIZER;
 int conn_counter = 0;
 
+
 int connmgr_main(int MAX_CONN, int PORT, sbuffer_t *buffer) {
     tcpsock_t *server, *client;
 
@@ -32,6 +33,8 @@ int connmgr_main(int MAX_CONN, int PORT, sbuffer_t *buffer) {
     if (tcp_passive_open(&server, PORT) != TCP_NO_ERROR) exit(EXIT_FAILURE);
     printf("connmgr.c: Connectie is geopend\n");
     pthread_t pid[MAX_CONN];
+    pthread_attr_t threadAttr;
+    pthread_attr_init(&threadAttr);
     do {
         if (tcp_wait_for_connection(server, &client) != TCP_NO_ERROR) exit(EXIT_FAILURE);
 
@@ -40,7 +43,7 @@ int connmgr_main(int MAX_CONN, int PORT, sbuffer_t *buffer) {
         threadArgs.client = client;
         threadArgs.buffer = buffer;
         //pthread_t threadId;
-        if (pthread_create(&pid[conn_counter], NULL, handle_client, (void *)&threadArgs) != 0) {
+        if (pthread_create(&pid[conn_counter], &threadAttr, handle_client, (void *)&threadArgs) != 0) {
             perror("pthread_create");
             exit(EXIT_FAILURE);
         }
@@ -75,40 +78,47 @@ void *handle_client(void *arg) {
     sbuffer_t *buffer = threadArgs->buffer;
     sensor_data_t data;
     int bytes, result;
+    int firstTime = 1;
+    char msg[MAX_STR_LEN];
 
     do {
         // read sensor ID
         bytes = sizeof(data.id);
         result = tcp_receive(client, (void *) &data.id, &bytes);
-        printf("connmgr.c: sensor id: %d\n", data.id);
+        if (firstTime == 1) {
+            sprintf(msg, "Sensor node %d has opened a new connection.", data.id);
+            write_to_log_process(msg);
+            firstTime = 0;
+        }
+
         // read temperature
         bytes = sizeof(data.value);
         result = tcp_receive(client, (void *) &data.value, &bytes);
-        printf("connmgr.c: temperatuur: %lf\n", data.value);
         // read timestamp
         bytes = sizeof(data.ts);
         result = tcp_receive(client, (void *) &data.ts, &bytes);
-        printf("connmgr.c: timestamp: %ld\n", data.ts);
 
         if ((result == TCP_NO_ERROR) && bytes) {
-            //Instantie van sensor data kopiëren om thread safety te waarborgen
-            //Anders kan het zijn dat de client de data aanpastt vooraleer het gekopiëerd is in de buffer
-            //Want de mutex lock zit IN de sbuffer_insert
-            printf("test connmgr\n");
-            sensor_data_t dataToCopy;
-            dataToCopy.id = data.id;
-            dataToCopy.value = data.value;
-            dataToCopy.ts = data.ts;
-            if (sbuffer_insert(buffer, &dataToCopy) == SBUFFER_SUCCESS) {
+            if (sbuffer_insert(buffer, &data) == SBUFFER_SUCCESS) {
                 printf("connmgr.c: Data in buffer inserted\n");
+                /*printf("connmgr.c: sensor id: %d\n", data.id);
+                printf("connmgr.c: temperatuur: %lf\n", data.value);
+                printf("connmgr.c: timestamp: %ld\n", data.ts);*/
+                fflush(stdout);
             }
         }
     } while (result == TCP_NO_ERROR);
 
-    if (result == TCP_CONNECTION_CLOSED)
+    if (result == TCP_CONNECTION_CLOSED) {
         printf("connmgr.c: Peer has closed connection\n");
-    else
+        sprintf(msg, "Sensor node %d has closed the connection.", data.id);
+        write_to_log_process(msg);
+    }
+
+    else {
         printf("connmgr.c: Error occured on connection to peer\n");
+        printf("result: %d, id: %d\n", result, data.id);
+    }
 
     tcp_close(&client);
 

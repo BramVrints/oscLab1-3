@@ -6,13 +6,12 @@
 #include <stdio.h>
 #include <pthread.h>
 #include "sbuffer.h"
+#include "config.h"
 
 pthread_cond_t cond_var;
 pthread_cond_t cond_var_peek;
 int peekDone = 0;
-
-//pthread_cond_t bufferNotEmptyCond = PTHREAD_COND_INITIALIZER;
-//sem_t removeSemaphore;
+pthread_mutex_t mutex;
 
 /**
  * basic node for the buffer, these nodes are linked together to create the buffer
@@ -28,7 +27,6 @@ typedef struct sbuffer_node {
 struct sbuffer {
     sbuffer_node_t *head;       /**< a pointer to the first node in the buffer */
     sbuffer_node_t *tail;       /**< a pointer to the last node in the buffer */
-    pthread_mutex_t mutex;
 };
 
 int sbuffer_init(sbuffer_t **buffer) {
@@ -37,13 +35,10 @@ int sbuffer_init(sbuffer_t **buffer) {
     (*buffer)->head = NULL;
     (*buffer)->tail = NULL;
     //Mutex initialiseren:
-    pthread_mutex_init(&(*buffer)->mutex, NULL);
+    pthread_mutex_init(&mutex, NULL);
     //POSIX condition variables initialiseren:
     pthread_cond_init(&cond_var, NULL);
     pthread_cond_init(&cond_var_peek, NULL);
-    //pthread_cond_init(&bufferNotEmptyCond, NULL);
-    //Semafoor initialiseren:
-    //sem_init(&removeSemaphore, 0,0);
     return SBUFFER_SUCCESS;
 }
 
@@ -53,7 +48,7 @@ int sbuffer_free(sbuffer_t **buffer) {
         return SBUFFER_FAILURE;
     }
     //Buffer kapot maken
-    pthread_mutex_destroy(&(*buffer)->mutex);
+    pthread_mutex_destroy(&mutex);
     //Nodes vd buffer leegmaken
     while ((*buffer)->head) {
         dummy = (*buffer)->head;
@@ -70,19 +65,18 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data) {
     if (buffer == NULL) return SBUFFER_FAILURE;
 
     //Kritische sectie
-    pthread_mutex_lock(&buffer->mutex);
+    pthread_mutex_lock(&mutex);
 
     while (peekDone == 0) {
-        pthread_cond_wait(&cond_var_peek, &buffer->mutex);
+        pthread_cond_wait(&cond_var_peek, &mutex);
     }
-
 
     *data = buffer->head->data;
 
     //Als het de end of stream character is:
     if (data->id == 0) {
         //pthread_cond_signal(&cond_var);
-        pthread_mutex_unlock(&buffer->mutex);
+        pthread_mutex_unlock(&mutex);
         return SBUFFER_NO_DATA;
     }
 
@@ -100,7 +94,7 @@ int sbuffer_remove(sbuffer_t *buffer, sensor_data_t *data) {
     pthread_cond_signal(&cond_var_peek);
 
     //Einde kritische sectie
-    pthread_mutex_unlock(&buffer->mutex);
+    pthread_mutex_unlock(&mutex);
     free(dummy);
     return SBUFFER_SUCCESS;
 }
@@ -118,7 +112,7 @@ int sbuffer_insert(sbuffer_t *buffer, sensor_data_t *data) {
     dummy->next = NULL;
 
     //kritische sectie
-    pthread_mutex_lock(&buffer->mutex);
+    pthread_mutex_lock(&mutex);
 
     if (buffer->tail == NULL) // buffer empty (buffer->head should also be NULL
     {
@@ -131,10 +125,8 @@ int sbuffer_insert(sbuffer_t *buffer, sensor_data_t *data) {
 
     //Connection manager signalt de data manager dat hij er iets heeft ingestoken:
     pthread_cond_signal(&cond_var);
-    //kritische sectie terug vrijgeven
-    pthread_mutex_unlock(&buffer->mutex);
-    //Signaleren aan de conditie variabele dat de buffer niet (meer) leeg is
-    //pthread_cond_signal(&bufferNotEmptyCond);
+    //kritische sectie terug vrijgeven:
+    pthread_mutex_unlock(&mutex);
     return SBUFFER_SUCCESS;
 }
 
@@ -142,14 +134,14 @@ int sbuffer_peek(sbuffer_t *buffer, sensor_data_t *data) {
     if (buffer == NULL || data == NULL) return SBUFFER_FAILURE;
 
     // Kritische sectie
-    pthread_mutex_lock(&buffer->mutex);
+    pthread_mutex_lock(&mutex);
 
     while (peekDone == 1) {
-        pthread_cond_wait(&cond_var_peek, &buffer->mutex);
+        pthread_cond_wait(&cond_var_peek, &mutex);
     }
 
     while (buffer->head == NULL) {
-        pthread_cond_wait(&cond_var, &buffer->mutex);
+        pthread_cond_wait(&cond_var, &mutex);
     }
 
     *data = buffer->head->data;
@@ -157,22 +149,10 @@ int sbuffer_peek(sbuffer_t *buffer, sensor_data_t *data) {
     peekDone = 1;
     pthread_cond_signal(&cond_var_peek);
 
-
-
-
     // Einde kritische sectie
-    pthread_mutex_unlock(&buffer->mutex);
+    pthread_mutex_unlock(&mutex);
 
     if (data->id == 0) return SBUFFER_NO_DATA;
 
     return SBUFFER_SUCCESS;
 }
-
-int sbuffer_is_empty(sbuffer_t *buffer) {
-    if (buffer == NULL) {
-        return 1;
-    }
-    //Als de head en de tail leeg zijn, dan is de lijst leeg
-    return (buffer->head == NULL && buffer->tail == NULL);
-}
-

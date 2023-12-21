@@ -8,10 +8,10 @@
 #include "sbuffer.h"
 #include "datamgr.h"
 #include "sensor_db.h"
+#include "config.h"
 
 #define READ_END 0
 #define WRITE_END 1
-#define MAX_STR_LEN 255
 
 char wmsg[MAX_STR_LEN];
 int logPipe[2];
@@ -45,7 +45,7 @@ void * startstoragemgr() {
 int main(int argc, char *argv[]) {
 
     if(argc < 3) {
-        printf("Please provide the right arguments: first the port, then the max nb of clients");
+        printf("Please provide the right arguments: first the port, then the max nb of clients\n");
         return -1;
     }
     MAX_CONN = atoi(argv[2]);

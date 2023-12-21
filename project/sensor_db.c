@@ -9,9 +9,6 @@
 #include <stdbool.h>
 #include <inttypes.h>
 
-#define MAX_STR_LEN 255
-
-
 char msg[MAX_STR_LEN];
 
 FILE * open_db(char * filename, bool append) {
@@ -55,7 +52,7 @@ int insert_sensor(FILE * f, sensor_id_t id, sensor_value_t value, sensor_ts_t ts
         return -1;
     }
 
-    //Zo wordt de data in de file geprint:
+    //Zo wordt de data in de csv file geprint:
     int resultaat = fprintf(f, "%" PRIu16 ",%g,%" PRIu64 "\n", id, value, (uint64_t)ts);
 
     //Als er een fout gebeurt, is resultaat < 0, anders stelt resultaat het aantal succesvol geschreven karakters voor

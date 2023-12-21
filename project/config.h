@@ -1,5 +1,5 @@
 /**
- * \author {AUTHOR}
+ * \author {Bram Vrints}
  */
 
 #ifndef _CONFIG_H_
@@ -7,6 +7,8 @@
 
 #include <stdint.h>
 #include <time.h>
+
+#define MAX_STR_LEN 255
 
 typedef uint16_t sensor_id_t;
 typedef double sensor_value_t;
