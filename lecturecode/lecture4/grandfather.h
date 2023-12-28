@@ -1,0 +1,8 @@
+//
+// Created by osc on 12/10/23.
+//
+
+#ifndef LECTURE4_GRANDFATHER_H
+#define LECTURE4_GRANDFATHER_H
+#define BUFFER_SIZE 100
+#endif //LECTURE4_GRANDFATHER_H

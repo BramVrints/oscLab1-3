@@ -34,13 +34,14 @@ CString *Init_CString(char *str) {
 
 
 void Delete_CString(CString *p) {
-	if (p == NULL) {
-        	// Handle invalid input (p is NULL)
-        	return;
-    	}
+    if (p == NULL) {
+        // Handle invalid input (p is NULL)
+        free(p);
+        return;
+    }
 
-    	free(p->str);
-    	free(p);
+    free(p->str);
+    free(p);
 }
 
 

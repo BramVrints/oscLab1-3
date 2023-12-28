@@ -1,0 +1,10 @@
+# ninja log v5
+0	108	1698310941109131874	CMakeFiles/lab3m1.dir/ex1/dplist.c.o	c24d5b04f6ab6b2e
+108	197	1698310941205131920	CMakeFiles/lab3m1.dir/ex1/program.c.o	aaf06bc82b0814e4
+197	257	1698310941265131948	CMakeFiles/lab3m1.dir/milestone1/dplist.c.o	4dbd3acb068db360
+257	322	1698310941329131978	CMakeFiles/lab3m1.dir/milestone1/dplist_test.c.o	d990ea28963b752d
+322	412	1698310941421132019	CMakeFiles/lab3m1.dir/milestone1/ourtest.c.o	4b319469f09134be
+413	509	1698310941513132060	CMakeFiles/lab3m1.dir/milestone1/randomtest.c.o	9ef77aa61a2852
+0	83	1698311707809188879	CMakeFiles/lab3m1.dir/ex1/dplist.c.o	c24d5b04f6ab6b2e
+1	152	1698312174777189012	CMakeFiles/lab3m1.dir/ex1/dplist.c.o	c24d5b04f6ab6b2e
+2	98	1698314215504490183	CMakeFiles/lab3m1.dir/ex1/dplist.c.o	c24d5b04f6ab6b2e

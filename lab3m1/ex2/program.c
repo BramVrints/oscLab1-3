@@ -143,7 +143,7 @@ int test06_get_element_at_index() {
     element_t e3 = dpl_get_element_at_index(list,-1);
     assert(e3 == 0);
 
-    dpl_free(list);
+    dpl_free(&list);
     return 0;
 }
 

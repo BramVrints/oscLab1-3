@@ -28,13 +28,13 @@ void *element_copy(void *element)
 
     copy->roomId = ((my_element_t *)element)->roomId;
     copy->sensorId = ((my_element_t *)element)->sensorId;
-    copy->runningAvg = ((my_element_t *)element)->runningAvg;
+    copy->runningAvg = (double *) malloc(RUN_AVG_LENGTH * sizeof(double));
+    ERROR_HANDLER(copy->runningAvg == NULL, "Memory allocation fout");
+    for (int i = 0; i < RUN_AVG_LENGTH; i++) {
+    	copy->runningAvg[i] = ((my_element_t *)element)->runningAvg[i];
+    }
+    copy->insertedData = ((my_element_t *)element)->insertedData;
     copy->lastModified = ((my_element_t *)element)->lastModified;
-
-    //Dynamic memory allocation voor time_t type?
-    //copy->lastModified = malloc(sizeof(time_t));
-    //ERROR_HANDLER(copy->lastModified == NULL, "Memory allocation fout in element_copy voor lastModified");
-    //copy->lastModified = ((my_element_t *)element)->lastModified;
 
     return (void *)copy;
 }

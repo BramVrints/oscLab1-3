@@ -14,14 +14,11 @@ char *strdup(const char *src) {
     if (src == NULL) {
         return NULL;
     }
-
     size_t len = strlen(src);
     char *dest = (char *)malloc(len + 1);
-
     if (dest != NULL) {
         strcpy(dest, src);
     }
-
     return dest;
 }
 

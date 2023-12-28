@@ -1,0 +1,1 @@
+strace -e trace=creat,open,close,read,write ./a.out a.out b.out
